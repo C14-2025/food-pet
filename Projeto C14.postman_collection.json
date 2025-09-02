@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "f8720a19-1f54-4fb1-995e-2d5f95743e47",
+		"name": "Projeto C14",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19024827"
+	},
+	"item": [
+		{
+			"name": "Create product through CSV",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/acpos/Desktop/Inatel/C14-LAB-PROJETO/projeto-c14/products.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"product"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST http://localhost:3000/api/product \\\r\n  -H \"Content-Type: multipart/form-data\" \\\r\n  -F \"file=@products.csv\""
+			},
+			"response": []
+		},
+		{
+			"name": "Get products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"product"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
