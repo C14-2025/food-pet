@@ -1,0 +1,63 @@
+import { POST } from '../../../src/app/api/product/route';
+import { NextRequest } from 'next/server';
+
+jest.mock('@/lib/db', () => ({
+    prisma: {
+        product: {
+            create: jest.fn(async ({ data }) => ({ id: 1, ...data })),
+        },
+    },
+}));
+
+function createMockFile(csv: string) {
+    return {
+        arrayBuffer: async () => Buffer.from(csv, 'utf-8'),
+        type: 'text/csv',
+    };
+}
+
+describe('POST /api/product', () => {
+    it('should insert products from valid CSV', async () => {
+        const csv = 'name,price,image\nProduct 1,10.5,img1.png\nProduct 2,20,img2.png';
+        const file = createMockFile(csv);
+        const formData = {
+            get: (key: string) => (key === 'file' ? file : undefined),
+        };
+        const req = {
+            headers: { get: (k: string) => 'multipart/form-data' },
+            formData: async () => formData,
+        } as unknown as NextRequest;
+        const res = await POST(req);
+        const json = await res.json();
+        expect(json.inserted).toBe(2);
+    });
+
+    it('should return 400 if file is missing', async () => {
+        const formData = {
+            get: () => undefined,
+        };
+        const req = {
+            headers: { get: () => 'multipart/form-data' },
+            formData: async () => formData,
+        } as unknown as NextRequest;
+        const res = await POST(req);
+        const json = await res.json();
+        expect(res.status).toBe(400);
+        expect(json.error).toMatch(/CSV file is required/);
+    });
+
+    it('should skip rows missing required columns', async () => {
+        const csv = 'name,price,image\nProduct 1,10.5,img1.png\nProduct 2,20,';
+        const file = createMockFile(csv);
+        const formData = {
+            get: (key: string) => (key === 'file' ? file : undefined),
+        };
+        const req = {
+            headers: { get: () => 'multipart/form-data' },
+            formData: async () => formData,
+        } as unknown as NextRequest;
+        const res = await POST(req);
+        const json = await res.json();
+        expect(json.inserted).toBe(1);
+    });
+});
