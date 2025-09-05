@@ -1,13 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { z } from 'zod';
 
 export async function POST(req: NextRequest) {
   try {
-    const { consumptionMethod, products } = await req.json();
+    const orderSchema = z.object({
+      consumptionMethod: z.enum(['DINE_IN', 'TAKE_AWAY'], {
+        message: 'consumptionMethod should be DINE_IN or TAKE_AWAY',
+      }),
+      products: z
+        .array(
+          z.object({
+            productId: z.number({ message: 'productId must be a valid number' }),
+            quantity: z.number().min(1, 'quantity should be positive'),
+          })
+        )
+        .min(1, 'must have at least one product'),
+    });
 
-    if (!consumptionMethod || !Array.isArray(products) || products.length === 0) {
-      return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+    const body = await req.json();
+    const result = orderSchema.safeParse(body);
+
+    if (!result.success) {
+      const first = result.error.issues[0];
+      const field = first?.path.join('.') || 'unknown';
+      const message = first?.message || 'Invalid payload';
+      return NextResponse.json({ error: `${field}: ${message}` }, { status: 400 });
     }
+
+    const { consumptionMethod, products } = result.data;
     let total = 0;
     const orderProductsData = [];
 
