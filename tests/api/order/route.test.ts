@@ -1,0 +1,96 @@
+import { NextRequest } from 'next/server';
+import { POST } from '../../../src/app/api/order/route';
+import { GET } from '../../../src/app/api/order/[id]/route';
+
+jest.mock('@/lib/db', () => ({
+  prisma: {
+    product: {
+      findUnique: jest.fn(async ({ where }) => (where.id === 1 ? { id: 1, name: 'Product 1', price: 10 } : null)),
+    },
+    order: {
+      create: jest.fn(async ({ data }) => ({ id: 1, ...data })),
+      findUnique: jest.fn(async ({}) => null),
+    },
+  },
+}));
+
+describe('POST /api/order', () => {
+  it('should create an order with valid payload', async () => {
+    const req = {
+      json: async () => ({
+        consumptionMethod: 'DINE_IN',
+        products: [{ productId: 1, quantity: 2 }],
+      }),
+    } as unknown as NextRequest;
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(200);
+    expect(json).toHaveProperty('id');
+  });
+
+  it('should return error for invalid consumptionMethod', async () => {
+    const req = {
+      json: async () => ({
+        consumptionMethod: 'INVALID',
+        products: [{ productId: 1, quantity: 2 }],
+      }),
+    } as unknown as NextRequest;
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/consumptionMethod/);
+  });
+
+  it('should return error for missing products', async () => {
+    const req = {
+      json: async () => ({
+        consumptionMethod: 'DINE_IN',
+        products: [],
+      }),
+    } as unknown as NextRequest;
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/must have at least one product/);
+  });
+
+  it('should return error for invalid quantity', async () => {
+    const req = {
+      json: async () => ({
+        consumptionMethod: 'DINE_IN',
+        products: [{ productId: 1, quantity: 0 }],
+      }),
+    } as unknown as NextRequest;
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.error).toMatch(/quantity should be positive/);
+  });
+});
+
+describe('GET api/order/[id]', () => {
+  it('should return 200 and order for valid id', async () => {
+    require('@/lib/db').prisma.order.findUnique = jest.fn(async () => ({
+      id: 1,
+      total: 20,
+      consumptionMethod: 'DINE_IN',
+      products: [],
+    }));
+    const req = {} as unknown as NextRequest;
+    const params = { id: '1' };
+    const res = await GET(req, { params });
+    const json = await res.json();
+    expect(res.status).toBe(200);
+    expect(json).toHaveProperty('id', 1);
+  });
+
+  it('should return 404 for non-existent order', async () => {
+    require('@/lib/db').prisma.order.findUnique = jest.fn(async () => null);
+    const req = {} as unknown as NextRequest;
+    const params = { id: '999' };
+    const res = await GET(req, { params });
+    const json = await res.json();
+    expect(res.status).toBe(404);
+    expect(json.error).toMatch(/Order not found/);
+  });
+});

@@ -17,7 +17,7 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "/C:/Users/acpos/Desktop/Inatel/C14-LAB-PROJETO/projeto-c14/products.csv"
+							"src": "products-example.csv"
 						}
 					]
 				},
@@ -52,6 +52,56 @@
 					"path": [
 						"api",
 						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create/Add products to chart/order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get order infos by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/order/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"order",
+						"1"
 					]
 				}
 			},

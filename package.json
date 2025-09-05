@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev --turbopack",
-  "build": "next build --turbopack",
-  "start": "next start",
-  "test": "jest"
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^6.15.0",
@@ -14,7 +14,8 @@
     "next": "15.5.2",
     "pg-hstore": "^2.3.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
