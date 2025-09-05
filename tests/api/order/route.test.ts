@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { POST } from '../../../src/app/api/order/route';
 import { GET } from '../../../src/app/api/order/[id]/route';
+import { prisma } from '@/lib/db';
 
 jest.mock('@/lib/db', () => ({
   prisma: {
@@ -9,7 +10,7 @@ jest.mock('@/lib/db', () => ({
     },
     order: {
       create: jest.fn(async ({ data }) => ({ id: 1, ...data })),
-      findUnique: jest.fn(async ({}) => null),
+      findUnique: jest.fn(async () => null),
     },
   },
 }));
@@ -70,12 +71,12 @@ describe('POST /api/order', () => {
 
 describe('GET api/order/[id]', () => {
   it('should return 200 and order for valid id', async () => {
-    require('@/lib/db').prisma.order.findUnique = jest.fn(async () => ({
+    prisma.order.findUnique = jest.fn(async () => ({
       id: 1,
       total: 20,
       consumptionMethod: 'DINE_IN',
       products: [],
-    }));
+    })) as unknown as typeof prisma.order.findUnique;
     const req = {} as unknown as NextRequest;
     const params = { id: '1' };
     const res = await GET(req, { params });
@@ -85,7 +86,7 @@ describe('GET api/order/[id]', () => {
   });
 
   it('should return 404 for non-existent order', async () => {
-    require('@/lib/db').prisma.order.findUnique = jest.fn(async () => null);
+    prisma.order.findUnique = jest.fn(async () => null) as unknown as typeof prisma.order.findUnique;
     const req = {} as unknown as NextRequest;
     const params = { id: '999' };
     const res = await GET(req, { params });
