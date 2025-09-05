@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       skip_empty_lines: true,
       trim: true,
     });
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Invalid CSV format' }, { status: 400 });
   }
 
@@ -41,7 +41,9 @@ export async function POST(req: NextRequest) {
         },
       });
       created.push(product);
-    } catch (e) {}
+    } catch (error) {
+      console.error('Erro ao criar produto:', error);
+    }
   }
 
   return NextResponse.json({ inserted: created.length });
@@ -51,7 +53,7 @@ export async function GET() {
   try {
     const products = await prisma.product.findMany();
     return NextResponse.json(products);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
   }
 }

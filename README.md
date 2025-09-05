@@ -21,11 +21,13 @@
    ```bash
    docker-compose up -d
    ```
+
 4. **Generate Prisma client**
 
    ```bash
    npx prisma generate
    ```
+
 5. **Run database migrations**
 
    ```bash

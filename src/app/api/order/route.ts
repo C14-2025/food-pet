@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
           z.object({
             productId: z.number({ message: 'productId must be a valid number' }),
             quantity: z.number().min(1, 'quantity should be positive'),
-          })
+          }),
         )
         .min(1, 'must have at least one product'),
     });
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(order);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
   }
 }
