@@ -1,20 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  const id = Number(params.id);
-  if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid order id' }, { status: 400 });
+type Ctx = { params: Promise<{ id: string }> };
+
+export async function GET(_req: NextRequest, { params }: Ctx) {
+  const { id } = await params;
+
+  if (Number.isNaN(Number(id))) {
+    return NextResponse.json({ error: `Invalid order id ${id}` }, { status: 400 });
   }
 
   const order = await prisma.order.findUnique({
-    where: { id },
+    where: { id: Number(id) },
     include: {
-      products: {
-        include: {
-          product: true,
-        },
-      },
+      products: { include: { product: true } },
     },
   });
 
@@ -23,4 +22,23 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 
   return NextResponse.json(order);
+}
+
+export async function DELETE(_req: NextRequest, { params }: Ctx) {
+  const { id } = await params;
+
+  if (Number.isNaN(Number(id))) {
+    return NextResponse.json({ error: 'Invalid order id' }, { status: 400 });
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.orderProduct.deleteMany({ where: { orderId: Number(id) } });
+      await tx.order.delete({ where: { id: Number(id) } });
+    });
+
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    return NextResponse.json({ error: `Failed to delete order: ${error}` }, { status: 500 });
+  }
 }

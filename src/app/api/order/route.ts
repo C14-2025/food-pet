@@ -61,3 +61,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    const orders = await prisma.order.findMany({
+      include: { products: true },
+    });
+    return NextResponse.json(orders);
+  } catch {
+    return NextResponse.json({ error: 'Failed to retrieve orders' }, { status: 500 });
+  }
+}
