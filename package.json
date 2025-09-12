@@ -7,7 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint": "tsc --noEmit && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --check .",
     "format:fix": "prettier --write ."
@@ -18,7 +18,7 @@
     "clsx": "^2.1.1",
     "csv-parse": "^6.1.0",
     "lucide-react": "^0.543.0",
-    "next": "15.5.2",
+    "next": "^15.5.3",
     "pg-hstore": "^2.3.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -28,7 +28,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/jest": "^30.0.0",
-    "@types/node": "^20",
+    "@types/node": "^24.3.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@typescript-eslint/eslint-plugin": "^8.42.0",
@@ -46,6 +46,6 @@
     "tailwindcss": "^4",
     "ts-jest": "^29.4.1",
     "tw-animate-css": "^1.3.8",
-    "typescript": "^5"
+    "typescript": "^5.9.2"
   }
 }
