@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
-type Ctx = { params: Promise<{ id: string }> };
-
-export async function GET(_req: NextRequest, { params }: Ctx) {
-  const { id } = await params;
+export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
 
   if (Number.isNaN(Number(id))) {
     return NextResponse.json({ error: `Invalid order id ${id}` }, { status: 400 });
@@ -24,8 +22,8 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
   return NextResponse.json(order);
 }
 
-export async function DELETE(_req: NextRequest, { params }: Ctx) {
-  const { id } = await params;
+export async function DELETE(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
 
   if (Number.isNaN(Number(id))) {
     return NextResponse.json({ error: 'Invalid order id' }, { status: 400 });

@@ -79,7 +79,7 @@ describe('POST /api/product', () => {
 describe('GET /api/products/[id]', () => {
   it('should return the product when found', async () => {
     const req = {} as unknown as NextRequest;
-    const res = await GET(req, { params: { id: '1' } });
+    const res = await GET(req, { params: Promise.resolve({ id: '1' }) });
 
     expect(res.status).toBe(200);
     const json = await res.json();
@@ -88,7 +88,7 @@ describe('GET /api/products/[id]', () => {
 
   it('should return 404 if product is not found', async () => {
     const req = {} as unknown as NextRequest;
-    const res = await GET(req, { params: { id: '999' } });
+    const res = await GET(req, { params: Promise.resolve({ id: '999' }) });
 
     expect(res.status).toBe(404);
     const json = await res.json();
@@ -97,7 +97,7 @@ describe('GET /api/products/[id]', () => {
 
   it('should return 500 if id param is not a valid number', async () => {
     const req = {} as unknown as NextRequest;
-    const res = await GET(req, { params: { id: 'abc' } });
+    const res = await GET(req, { params: Promise.resolve({ id: 'abc' }) });
 
     expect(res.status).toBe(500);
     const json = await res.json();
