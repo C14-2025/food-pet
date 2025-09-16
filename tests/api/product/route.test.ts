@@ -1,4 +1,4 @@
-import { GET } from '@/app/api/product/[id]/route';
+import { GET, DELETE } from '@/app/api/product/[id]/route';
 import { POST } from '@/app/api/product/route';
 import { NextRequest } from 'next/server';
 
@@ -19,7 +19,31 @@ jest.mock('@/lib/db', () => ({
         }
         return null;
       }),
+      delete: jest.fn(async ({ where }) => {
+        if (where.id === 1) {
+          return MOCK_PRODUCT;
+        }
+        throw new Error('Product not found');
+      }),
     },
+    orderProduct: {
+      deleteMany: jest.fn(async () => ({ count: 0 })),
+    },
+    $transaction: jest.fn(async (callback) => {
+      return await callback({
+        product: {
+          delete: jest.fn(async ({ where }) => {
+            if (where.id === 1) {
+              return MOCK_PRODUCT;
+            }
+            throw new Error('Product not found');
+          }),
+        },
+        orderProduct: {
+          deleteMany: jest.fn(async () => ({ count: 0 })),
+        },
+      });
+    }),
   },
 }));
 
@@ -103,5 +127,33 @@ describe('GET /api/products/[id]', () => {
     const json = await res.json();
 
     expect(json.error).toMatch(/invalid id/i);
+  });
+});
+
+describe('DELETE /api/products/[id]', () => {
+  it('should delete the product when found', async () => {
+    const req = {} as unknown as NextRequest;
+    const res = await DELETE(req, { params: Promise.resolve({ id: '1' }) });
+
+    expect(res.status).toBe(204);
+    expect(res.body).toBe(null);
+  });
+
+  it('should return 404 if product is not found', async () => {
+    const req = {} as unknown as NextRequest;
+    const res = await DELETE(req, { params: Promise.resolve({ id: '999' }) });
+
+    expect(res.status).toBe(404);
+    const json = await res.json();
+    expect(json.error).toMatch(/not found/i);
+  });
+
+  it('should return 400 if id param is not a valid number', async () => {
+    const req = {} as unknown as NextRequest;
+    const res = await DELETE(req, { params: Promise.resolve({ id: 'abc' }) });
+
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toMatch(/invalid product id/i);
   });
 });
