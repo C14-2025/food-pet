@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { listProducts } from '@/lib/api/product';
 import type { Product } from '@/features/orders/types';
 import { Package } from 'lucide-react';
+import Image from 'next/image';
 
 interface ProductsTableProps {
   refreshTrigger: number;
@@ -104,7 +105,7 @@ export function ProductsTable({ refreshTrigger }: ProductsTableProps) {
                     <TableCell>{formatCurrency(product.price)}</TableCell>
                     <TableCell>
                       <div className='flex items-center gap-2'>
-                        <img
+                        <Image
                           src={product.image}
                           alt={product.name}
                           className='h-10 w-10 rounded object-cover'
