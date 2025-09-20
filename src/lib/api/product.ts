@@ -34,3 +34,14 @@ export async function uploadProductsCsv(file: File): Promise<{ inserted: number 
 
   return (await res.json()) as { inserted: number };
 }
+
+export async function deleteProductById(id: string) {
+  const res = await fetch(`/api/product/${id}`, { method: 'DELETE', cache: 'no-store' });
+
+  if (!res.ok) {
+    const body = (await res.json()) as { error?: string };
+    throw new Error(body?.error ?? 'Falha ao deletar produto');
+  }
+
+  return null;
+}
