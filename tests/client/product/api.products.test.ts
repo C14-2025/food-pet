@@ -1,4 +1,4 @@
-import { listProducts, getProductById, uploadProductsCsv } from '@/lib/api/product';
+import { listProducts, getProductById, uploadProductsCsv, deleteProductById } from '@/lib/api/product';
 import type { Product } from '@/features/orders/types';
 
 // Helpers para mock do fetch
@@ -13,6 +13,12 @@ const errJson = (message: string, status = 400) =>
   new Response(JSON.stringify({ error: message }), {
     status,
     headers: { 'Content-Type': 'application/json' },
+  });
+
+const noContent = (init?: ResponseInit) =>
+  new Response(null, {
+    status: 204,
+    ...init,
   });
 
 // Util: instala um mock para global.fetch
@@ -78,5 +84,16 @@ describe('products API client', () => {
 
     mockFetch(async () => errJson('Falha ao importar produtos', 400));
     await expect(uploadProductsCsv(fakeFile)).rejects.toThrow('Falha ao importar produtos');
+  });
+
+  test('deleteProductById retorna null quando sucesso (204)', async () => {
+    mockFetch(async () => noContent());
+    await expect(deleteProductById('10')).resolves.toBeNull();
+    expect(fetch).toHaveBeenCalledWith('/api/product/10', { method: 'DELETE', cache: 'no-store' });
+  });
+
+  test('deleteProductById lança erro quando não ok', async () => {
+    mockFetch(async () => errJson('Produto não encontrado', 404));
+    await expect(deleteProductById('123')).rejects.toThrow('Produto não encontrado');
   });
 });
