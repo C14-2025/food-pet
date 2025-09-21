@@ -108,6 +108,8 @@ export function ProductsTable({ refreshTrigger }: ProductsTableProps) {
                         <Image
                           src={product.image}
                           alt={product.name}
+                          width={40}
+                          height={40}
                           className='h-10 w-10 rounded object-cover'
                           onError={(e) => {
                             (e.target as HTMLImageElement).src =

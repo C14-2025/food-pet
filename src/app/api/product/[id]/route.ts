@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -45,7 +46,7 @@ export async function DELETE(_request: Request, context: { params: Promise<{ id:
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.orderProduct.deleteMany({ where: { productId: Number(id) } });
       await tx.product.delete({ where: { id: Number(id) } });
     });
