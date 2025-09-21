@@ -1,227 +1,218 @@
 {
-	"info": {
-		"_postman_id": "363e17af-f237-4184-afd2-4162dc2f6092",
-		"name": "Projeto C14",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "19024827"
-	},
-	"item": [
-		{
-			"name": "Order",
-			"item": [
-				{
-					"name": "Create/Add products to chart/order",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/order",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"order"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get order infos by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/order",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"order"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get all order infos",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}"
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/order",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"order"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete order infos by ID",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}"
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/order/3",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"order",
-								"3"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Product",
-			"item": [
-				{
-					"name": "Create product through CSV",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/lucas/dev/food-pet/products-example.csv"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/product",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"product"
-							]
-						},
-						"description": "Generated from cURL: curl -X POST http://localhost:3000/api/product \\\r\n  -H \"Content-Type: multipart/form-data\" \\\r\n  -F \"file=@products.csv\""
-					},
-					"response": []
-				},
-				{
-					"name": "Get all products",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/product",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"product"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get product by ID",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/lucas/dev/food-pet/products-example.csv"
-								}
-							]
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/product/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"product",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete product by ID",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:3000/api/product/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"product",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "d844de23-68ea-44bb-8d4b-a54f39b466d0",
+    "name": "Projeto C14",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42748557"
+  },
+  "item": [
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Create/Add products to chart/order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/order",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get order infos by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/order",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get all order infos",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/order",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete order infos by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"consumptionMethod\": \"TAKE_AWAY\",\n  \"products\": [\n    { \"productId\": 1, \"quantity\": 2 },\n    { \"productId\": 3, \"quantity\": 1 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/order/3",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "order", "3"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product",
+      "item": [
+        {
+          "name": "Create product through CSV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/lucas/dev/food-pet/products-example.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product"]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:3000/api/product \\\r\n  -H \"Content-Type: multipart/form-data\" \\\r\n  -F \"file=@products.csv\""
+          },
+          "response": []
+        },
+        {
+          "name": "Get all products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/product",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get product by ID",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/C:/Users/lucas/dev/food-pet/products-example.csv"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/product/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete product by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/product/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "product", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sales Summary",
+      "item": [
+        {
+          "name": "Get sales summary by personalized date",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Get sales summary by period",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/sales-summary?period=week",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "sales-summary"],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "week"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }

@@ -13,7 +13,6 @@
    ```
 
 2. **Configure environment variables**
-
    - Copy `.env.example` to `.env` and adjust as needed.
 
 3. **Start the database with Docker**

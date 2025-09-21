@@ -7,7 +7,7 @@ const jestConfig = {
     '\\.(css|sass|scss)$': 'identity-obj-proxy',
   },
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', { isolatedModules: true, tsconfig: { jsx: 'react-jsx' } }],
+    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
   },
   transformIgnorePatterns: ['/node_modules/(?!(lucide-react)/)'],
 };

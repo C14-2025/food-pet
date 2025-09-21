@@ -33,6 +33,8 @@ model Order {
   id                Int               @id @default(autoincrement())
   total             Float
   consumptionMethod consumptionMethod
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
   products OrderProduct[]
 }

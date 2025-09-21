@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 
 export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
@@ -30,7 +31,7 @@ export async function DELETE(_req: NextRequest, context: { params: Promise<{ id:
   }
 
   try {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.orderProduct.deleteMany({ where: { orderId: Number(id) } });
       await tx.order.delete({ where: { id: Number(id) } });
     });
