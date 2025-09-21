@@ -8,7 +8,7 @@ import { OrdersTable } from './OrdersTable';
 import { CreateOrderForm } from './CreateOrderForm';
 import type { Order } from '@/features/orders/types';
 import { listOrders, getErrorMessage } from '@/lib/api/orders';
-import { AuthenticatedResource } from '@/components/ui/AuthenticatedResource/AuthenticatedResource';
+import { AuthenticatedResource } from '@/components/AuthenticatedResource/AuthenticatedResource';
 
 export function OrdersPageClient() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -32,7 +32,6 @@ export function OrdersPageClient() {
   }, []);
 
   return (
-    <AuthenticatedResource>
       <div className='mx-auto max-w-6xl space-y-6 p-6'>
         <h1 className='text-2xl font-bold'>Pedidos</h1>
 
@@ -62,6 +61,5 @@ export function OrdersPageClient() {
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedResource>
   );
 }
