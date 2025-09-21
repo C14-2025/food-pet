@@ -8,6 +8,7 @@ import { OrdersTable } from './OrdersTable';
 import { CreateOrderForm } from './CreateOrderForm';
 import type { Order } from '@/features/orders/types';
 import { listOrders, getErrorMessage } from '@/lib/api/orders';
+import { AuthenticatedResource } from '@/components/AuthenticatedResource/AuthenticatedResource';
 
 export function OrdersPageClient() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -34,12 +35,12 @@ export function OrdersPageClient() {
     <div className='mx-auto max-w-6xl space-y-6 p-6'>
       <h1 className='text-2xl font-bold'>Pedidos</h1>
 
-      <CreateOrderForm onCreated={refresh} />
+      <CreateOrderForm onCreated={() => refresh()} />
 
       <Card>
         <CardHeader className='flex flex-row items-center justify-between'>
           <CardTitle className='text-xl'>Lista de pedidos</CardTitle>
-          <Button variant='outline' size='sm' onClick={refresh}>
+          <Button variant='outline' size='sm' onClick={() => refresh()}>
             <RefreshCcw className='mr-2 h-4 w-4' /> Atualizar
           </Button>
         </CardHeader>
