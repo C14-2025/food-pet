@@ -10,6 +10,7 @@ const jestConfig = {
     '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
   },
   transformIgnorePatterns: ['/node_modules/(?!(lucide-react)/)'],
+  reporters: ['default', 'jest-html-reporter'],
 };
 
 module.exports = jestConfig;
