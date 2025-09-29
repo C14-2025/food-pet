@@ -61,7 +61,7 @@ jobs:
         with:
           name: build
           path: |
-            .next/
+            **/.next/**
 
   cypress:
     runs-on: ubuntu-latest
