@@ -63,8 +63,8 @@ export async function GET(request: NextRequest) {
       startDate: startDate?.toISOString() || null,
       endDate: endDate?.toISOString() || null,
       totalOrders,
-      totalProducts: totalProducts._sum.quantity || 0,
-      totalProfit: totalProfit._sum.total || 0,
+      totalProducts: totalProducts._sum?.quantity ?? 0,
+      totalProfit: totalProfit._sum?.total ?? 0,
     });
   } catch (err) {
     console.error('[Sales Summary Error]', err);
