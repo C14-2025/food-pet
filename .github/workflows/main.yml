@@ -35,3 +35,43 @@ jobs:
           coverage/
           test-report.html  
         retention-days: 30
+  notify:
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always() # notifica mesmo se o teste falhar
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install runtime deps for notify
+        run: npm i -D tsx nodemailer
+
+      - name: Build message file
+        run: |
+          {
+            echo "Pipeline executado!"
+            echo ""
+            echo "🧪 Testes:  ${{ needs.test.result }}"
+            echo "Repo:       $GITHUB_REPOSITORY"
+            echo "Autor:      $GITHUB_ACTOR"
+            echo "Commit:     $GITHUB_SHA"
+            echo "Run:        ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "Workflow:   $GITHUB_WORKFLOW (#$GITHUB_RUN_NUMBER)"
+          } > notify-message.txt
+
+      - name: Run notify script (TypeScript)
+        env:
+          TEST_STATUS: ${{ needs.test.result }}
+          SUBJECT:   "CI: tests=${{ needs.test.result }}"
+          MESSAGE_FILE: "notify-message.txt"
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}   
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_TO:  ${{ secrets.EMAIL_TO }}
+        run: npx tsx scripts/notify.ts
