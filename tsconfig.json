@@ -14,24 +14,10 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "baseUrl": "src",
-    "paths": {
-      "@/*": ["*"]
-    }
+    "paths": { "@/*": ["*"] }
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/app/api/sales-summary",
-    "cypress/**/*.ts",
-    "cypress.d.ts"
-  ],
-  "exclude": ["node_modules", "cypress"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules", "cypress", "tests"]
 }
