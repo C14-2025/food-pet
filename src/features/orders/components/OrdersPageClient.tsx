@@ -33,7 +33,7 @@ export function OrdersPageClient() {
 
   return (
     <div className='mx-auto max-w-6xl space-y-6 p-6'>
-      <h1 className='text-2xl font-bold'>Pedidos</h1>
+      <h1 className='text-2xl font-bold' id="orders-title">Pedidos</h1>
 
       <CreateOrderForm onCreated={() => refresh()} />
 
