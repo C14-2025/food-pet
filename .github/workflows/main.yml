@@ -61,6 +61,7 @@ jobs:
         with:
           name: build
           path: .next/**
+          include-hidden-files: true
 
   cypress:
     runs-on: ubuntu-latest
