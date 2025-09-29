@@ -69,7 +69,7 @@ export function LoginPageClient() {
               </div>
 
               <Button
-                data-testid="login-button"
+                data-testid='login-button'
                 type='submit'
                 className='w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200'
               >
