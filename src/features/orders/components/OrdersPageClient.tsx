@@ -8,7 +8,6 @@ import { OrdersTable } from './OrdersTable';
 import { CreateOrderForm } from './CreateOrderForm';
 import type { Order } from '@/features/orders/types';
 import { listOrders, getErrorMessage } from '@/lib/api/orders';
-import { AuthenticatedResource } from '@/components/AuthenticatedResource/AuthenticatedResource';
 
 export function OrdersPageClient() {
   const [orders, setOrders] = useState<Order[]>([]);

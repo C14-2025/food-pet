@@ -52,11 +52,11 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        run: npm run lint
+        run: npm run lint:all
 
   build:
     runs-on: ubuntu-latest
-    needs: [test, lint] # só executa se o job "test" e "lint" terminar
+    needs: [test] # só executa se o job "test" terminar
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
