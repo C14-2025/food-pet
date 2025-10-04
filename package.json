@@ -2,6 +2,7 @@
   "name": "projeto-c14",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -16,7 +17,12 @@
     "format:fix": "prettier --write .",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "test:e2e": "start-server-and-test dev http://localhost:3000 cypress:run"
+    "test:e2e": "start-server-and-test dev http://localhost:3000 cypress:run",
+    "db:migrate": "npx prisma migrate dev --name init",
+    "db:deploy": "npx prisma migrate deploy",
+    "db:reset": "npx prisma migrate reset --force",
+    "db:generate": "npx prisma generate",
+    "seed": "ts-node-esm scripts/seed/index.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
@@ -67,9 +73,10 @@
     "start-server-and-test": "^2.1.2",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "tw-animate-css": "^1.3.8",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "packageManager": "yarn@4.7.0+sha512.5a0afa1d4c1d844b3447ee3319633797bcd6385d9a44be07993ae52ff4facabccafb4af5dcd1c2f9a94ac113e5e9ff56f6130431905884414229e284e37bb7c9"
 }
