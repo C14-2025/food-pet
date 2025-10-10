@@ -7,6 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "test": "jest",
+    "test:cov": "jest --coverage",
     "lint": "tsc --noEmit -p tsconfig.json && eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:jest": "tsc --noEmit -p tsconfig.jest.json && eslint . --ext .ts,.tsx",
     "lint:cypress": "tsc --noEmit -p tsconfig.cypress.json && eslint cypress --ext .ts",
