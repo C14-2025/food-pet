@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
-import { POST } from '../../../src/app/api/order/route';
+import { POST, GET as GET_ALL } from '../../../src/app/api/order/route';
 import { DELETE, GET } from '../../../src/app/api/order/[id]/route';
 import { prisma } from '@/lib/db';
+import { expect } from '@jest/globals';
 
 jest.mock('@/lib/db', () => {
   const deleteManyMock = jest.fn().mockResolvedValue({ count: 1 });
@@ -91,6 +92,21 @@ describe('POST /api/order', () => {
     expect(res.status).toBe(400);
     expect(json.error).toMatch(/quantity should be positive/);
   });
+
+  it('should return 500 when order creation fails', async () => {
+    prisma.order.create = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    const req = {
+      json: async () => ({
+        consumptionMethod: 'DINE_IN',
+        products: [{ productId: 1, quantity: 2 }],
+      }),
+    } as unknown as NextRequest;
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(500);
+    expect(json.error).toMatch(/Failed to create order/);
+  });
 });
 
 describe('GET api/order/[id]', () => {
@@ -141,5 +157,46 @@ describe('DELETE api/order/[id]', () => {
     const res = await DELETE(req, { params });
 
     expect(res.status).toBe(400);
+  });
+});
+
+describe('GET /api/order', () => {
+  it('should return all orders successfully', async () => {
+    const mockOrders = [
+      {
+        id: 1,
+        total: 20,
+        consumptionMethod: 'DINE_IN',
+        products: [{ id: 1, productId: 1, orderId: 1, quantity: 2, price: 10, subtotal: 20 }],
+      },
+      {
+        id: 2,
+        total: 30,
+        consumptionMethod: 'TAKE_OUT',
+        products: [{ id: 2, productId: 2, orderId: 2, quantity: 3, price: 10, subtotal: 30 }],
+      },
+    ];
+
+    prisma.order.findMany = jest.fn().mockResolvedValue(mockOrders);
+
+    const res = await GET_ALL();
+    const json = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(json).toEqual(mockOrders);
+    expect(json).toHaveLength(2);
+    expect(prisma.order.findMany).toHaveBeenCalledWith({
+      include: { products: true },
+    });
+  });
+
+  it('should return 500 when retrieving orders fails', async () => {
+    prisma.order.findMany = jest.fn().mockRejectedValue(new Error('Database error'));
+
+    const res = await GET_ALL();
+    const json = await res.json();
+
+    expect(res.status).toBe(500);
+    expect(json.error).toMatch(/Failed to retrieve orders/);
   });
 });

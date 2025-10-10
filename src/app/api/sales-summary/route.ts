@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
     let startDate: Date | undefined;
     let endDate: Date | undefined;
 
-    // 1️⃣ Datas customizadas
     if (from && to) {
       startDate = new Date(from + 'T00:00:00Z'); // início do dia UTC
       endDate = new Date(to + 'T23:59:59Z'); // fim do dia UTC
