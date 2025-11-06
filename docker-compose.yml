@@ -1,6 +1,22 @@
-version: '3.8'
-
 services:
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    user: root
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ./jenkins-casc.yaml:/var/jenkins_home/casc.yaml:ro
+      - ./Jenkinsfile:/var/jenkins_home/Jenkinsfile:ro
+      - .:/workspace
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc.yaml
+    restart: unless-stopped
+
   db:
     image: postgres:16
     restart: unless-stopped
@@ -14,4 +30,5 @@ services:
       - pgdata:/var/lib/postgresql/data
 
 volumes:
+  jenkins_home:
   pgdata:

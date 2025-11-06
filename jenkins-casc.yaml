@@ -1,0 +1,44 @@
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin"
+  numExecutors: 2
+  scmCheckoutRetryCount: 2
+  mode: NORMAL
+  disabledAdministrativeMonitors:
+    - "jenkins.model.InvalidBuildsDir"
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+tool:
+  nodejs:
+    installations:
+      - name: "NodeJS 20"
+        properties:
+          - installSource:
+              installers:
+                - nodeJSInstaller:
+                    id: "20.11.0"
+                    npmPackagesRefreshHours: 72
+
+jobs:
+  - script: >
+      pipelineJob('projeto-c14-pipeline') {
+        definition {
+          cps {
+            script(new File('/var/jenkins_home/Jenkinsfile').text)
+            sandbox()
+          }
+        }
+      }
+
+unclassified:
+  globalLibraries:
+    libraries: []
