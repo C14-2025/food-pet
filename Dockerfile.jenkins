@@ -1,0 +1,28 @@
+FROM jenkins/jenkins:lts
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y wget curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN node --version && npm --version
+
+RUN chown -R jenkins:jenkins /var/jenkins_home && \
+    chmod -R 755 /var/jenkins_home
+
+USER jenkins
+
+RUN jenkins-plugin-cli --plugins \
+    configuration-as-code:latest \
+    git:latest \
+    workflow-aggregator:latest \
+    nodejs:latest \
+    htmlpublisher:latest \
+    job-dsl:latest \
+    git-client:latest
+
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
