@@ -20,21 +20,29 @@ jenkins:
 tool:
   nodejs:
     installations:
-      - name: "NodeJS 20"
+      - name: "NodeJS 22"
         properties:
           - installSource:
               installers:
                 - nodeJSInstaller:
-                    id: "20.11.0"
+                    id: "22.11.0"
                     npmPackagesRefreshHours: 72
 
 jobs:
   - script: >
       pipelineJob('projeto-c14-pipeline') {
         definition {
-          cps {
-            script(new File('/var/jenkins_home/Jenkinsfile').text)
-            sandbox()
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/C14-2025/food-pet.git')
+                }
+                branches('*/ci/sonarqube')
+                extensions { }
+              }
+            }
+            scriptPath('Jenkinsfile')
           }
         }
       }
@@ -42,3 +50,9 @@ jobs:
 unclassified:
   globalLibraries:
     libraries: []
+
+  sonarGlobalConfiguration:
+    installations:
+      - name: "SonarQubeServer"
+        serverUrl: "http://sonarqube:9000"
+        credentialsId: "sonarqube-token"
