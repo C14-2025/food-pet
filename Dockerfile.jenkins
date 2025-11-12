@@ -11,6 +11,8 @@ RUN apt-get update && \
 
 RUN node --version && npm --version
 
+RUN npm install -g sonarqube-scanner
+
 RUN chown -R jenkins:jenkins /var/jenkins_home && \
     chmod -R 755 /var/jenkins_home
 
@@ -23,6 +25,7 @@ RUN jenkins-plugin-cli --plugins \
     nodejs:latest \
     htmlpublisher:latest \
     job-dsl:latest \
-    git-client:latest
+    git-client:latest \
+    sonar:latest
 
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"

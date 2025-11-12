@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS 20'
+        nodejs 'NodeJS 22'
     }
 
     environment {
@@ -12,17 +12,18 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                checkout scm
                 echo 'Current working directory:'
                 sh 'pwd'
                 echo 'Listing workspace contents:'
-                sh 'ls -la /workspace'
+                sh 'ls -la ${WORKSPACE}'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                dir('/workspace') {
-                    echo 'Installing dependencies in /workspace...'
+                dir("${WORKSPACE}") {
+                    echo 'Installing dependencies...'
                     sh 'pwd'
                     sh 'npm install'
                 }
@@ -31,7 +32,7 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                dir('/workspace') {
+                dir("${WORKSPACE}") {
                     echo 'Running tests with coverage...'
                     sh 'npx jest --coverage --json --outputFile=test-results.json'
                 }
@@ -40,10 +41,26 @@ pipeline {
 
         stage('Archive Test Results') {
             steps {
-                dir('/workspace') {
+                dir("${WORKSPACE}") {
                     echo 'Archiving test results...'
                     archiveArtifacts artifacts: 'test-report.html,coverage/**,test-results.json',
-                                allowEmptyArchive: false
+                                      allowEmptyArchive: false
+                }
+            }
+        }
+
+        stage('SonarQube Analysis and Quality Gate') {
+            steps {
+                dir("${WORKSPACE}") {
+                    withSonarQubeEnv('SonarQubeServer') {
+                        echo 'Running SonarQube analysis...'
+                        sh 'sonar-scanner'
+                    }
+
+                    echo 'Checking Quality Gate status...'
+                    timeout(time: 10, unit: 'MINUTES') {
+                        waitForQualityGate abortPipeline: true
+                    }
                 }
             }
         }
@@ -54,7 +71,7 @@ pipeline {
             echo 'Pipeline execution completed.'
         }
         success {
-            echo 'Tests passed successfully!'
+            echo 'Tests passed successfully.'
         }
         failure {
             echo 'Tests failed. Please check the test reports.'
