@@ -11,10 +11,25 @@ services:
       - jenkins_home:/var/jenkins_home
       - ./jenkins-casc.yaml:/var/jenkins_home/casc.yaml:ro
       - ./Jenkinsfile:/var/jenkins_home/Jenkinsfile:ro
-      - .:/workspace
+      - workspace_data:/var/jenkins_home/workspace
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc.yaml
+    restart: unless-stopped
+    depends_on:
+      - sonarqube
+
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    ports:
+      - '9000:9000'
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
     restart: unless-stopped
 
   db:
@@ -29,6 +44,22 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  setup:
+    build:
+      context: .
+      dockerfile: Dockerfile.setup
+    depends_on:
+      - jenkins
+      - sonarqube
+    volumes:
+      - setup_done:/setup_done
+    restart: 'no'
+
 volumes:
   jenkins_home:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
+  setup_done:
   pgdata:
+  workspace_data:

@@ -1,0 +1,11 @@
+FROM eclipse-temurin:17-jdk-jammy
+
+RUN apt-get update && \
+    apt-get install -y curl jq bash && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY setup-sonarqube.sh /setup-sonarqube.sh
+
+RUN chmod +x /setup-sonarqube.sh
+
+ENTRYPOINT ["/bin/bash", "/setup-sonarqube.sh"]
