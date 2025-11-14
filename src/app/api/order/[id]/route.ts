@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
+import { checkAuth } from '@/lib/auth/endpoints.auth.helper';
 
 export async function GET(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
+  if (!authCheck.authorized) {
+    return authCheck.response;
+  }
+
   const { id } = await context.params;
 
   if (Number.isNaN(Number(id))) {
@@ -24,6 +30,11 @@ export async function GET(_req: NextRequest, context: { params: Promise<{ id: st
 }
 
 export async function DELETE(_req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
+  if (!authCheck.authorized) {
+    return authCheck.response;
+  }
+  
   const { id } = await context.params;
 
   if (Number.isNaN(Number(id))) {
