@@ -32,14 +32,22 @@ Cypress.Commands.add('mockUnauthenticated', () => {
 });
 
 Cypress.Commands.add('mockCredentialsLoginSuccess', (email: string, role: string) => {
-  cy.intercept('POST', '/api/auth/callback/credentials', {
+  // Mock the signin endpoint
+  cy.intercept('POST', '/api/auth/signin/credentials*', {
     statusCode: 200,
-    body: {
-      url: `${Cypress.config().baseUrl}/orders`,
-    },
-  }).as('credentialsLogin');
+    body: {},
+  }).as('signin');
 
-  cy.intercept('GET', '/api/auth/session', {
+  // Mock the callback endpoint
+  cy.intercept('POST', '/api/auth/callback/credentials*', {
+    statusCode: 302,
+    headers: {
+      location: '/orders',
+    },
+  }).as('callback');
+
+  // Mock the session endpoint that will be called after login
+  cy.intercept('GET', '/api/auth/session*', {
     statusCode: 200,
     body: {
       user: {
@@ -49,6 +57,13 @@ Cypress.Commands.add('mockCredentialsLoginSuccess', (email: string, role: string
       expires: new Date(Date.now() + 86400000).toISOString(),
     },
   }).as('session');
+
+  cy.intercept('GET', '/api/auth/csrf*', {
+    statusCode: 200,
+    body: {
+      csrfToken: 'mocked-csrf-token',
+    },
+  }).as('csrf');
 });
 
 Cypress.Commands.add('mockCredentialsLoginFailure', () => {
