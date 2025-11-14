@@ -38,6 +38,7 @@ export function LoginPageClient() {
         router.refresh();
       }
     } catch (error) {
+      console.log('Login error:', error);
       setError('Ocorreu um erro. Por favor, tente novamente.');
     } finally {
       setIsLoading(false);
