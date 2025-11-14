@@ -40,6 +40,19 @@ jest.mock('@/lib/db', () => {
   return { prisma };
 });
 
+jest.mock('@/lib/auth/endpoints.auth.helper', () => ({
+  checkAuth: jest.fn(() =>
+    Promise.resolve({
+      authorized: true,
+      session: {
+        user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+        expires: '2024-12-31',
+      },
+      user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+    }),
+  ),
+}));
+
 describe('POST /api/order', () => {
   it('should create an order with valid payload', async () => {
     const req = {

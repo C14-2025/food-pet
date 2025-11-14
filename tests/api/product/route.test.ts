@@ -48,6 +48,19 @@ jest.mock('@/lib/db', () => ({
   },
 }));
 
+jest.mock('@/lib/auth/endpoints.auth.helper', () => ({
+  checkAuth: jest.fn(() =>
+    Promise.resolve({
+      authorized: true,
+      session: {
+        user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+        expires: '2024-12-31',
+      },
+      user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+    }),
+  ),
+}));
+
 function createMockFile(csv: string) {
   return {
     arrayBuffer: async () => Buffer.from(csv, 'utf-8'),
