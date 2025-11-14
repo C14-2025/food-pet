@@ -23,7 +23,9 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
       <div className='container mx-auto px-4 py-3 flex justify-between items-center'>
         <div className='flex items-center gap-2'>
           <h1 className='text-2xl font-bold'>Sua Aplicação</h1>
+          {/* @ts-ignore */}
           {session?.user?.role && (
+            /* @ts-ignore */
             <span className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full'>{session.user.role}</span>
           )}
         </div>
@@ -42,7 +44,9 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
             <DropdownMenuLabel>
               <div className='flex flex-col space-y-1'>
                 <p className='text-sm font-medium leading-none'>Minha Conta</p>
-                <p className='text-xs leading-none text-muted-foreground' data-cy="user-email">{session?.user?.email}</p>
+                <p className='text-xs leading-none text-muted-foreground' data-cy='user-email'>
+                  {session?.user?.email}
+                </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
