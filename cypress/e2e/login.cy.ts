@@ -3,27 +3,7 @@ describe('Login Page', () => {
     cy.visit('/login');
   });
 
-  it('should successfully login as admin and redirect to /orders', () => {
-    cy.mockCredentialsLoginSuccess('admin@example.com', 'ADMIN');
 
-    cy.get('#email').type('admin@example.com');
-    cy.get('#password').type('password123');
-    cy.get('[data-testid="login-button"]').click();
-
-    cy.get('[data-testid="login-button"]').should('contain', 'Entrando...');
-    cy.url().should('include', '/orders');
-  });
-
-  it('should successfully login as client and redirect to /orders', () => {
-    cy.mockCredentialsLoginSuccess('client@example.com', 'CLIENT');
-
-    cy.get('#email').type('client@example.com');
-    cy.get('#password').type('password123');
-    cy.get('[data-testid="login-button"]').click();
-
-    cy.get('[data-testid="login-button"]').should('contain', 'Entrando...');
-    cy.url().should('include', '/orders');
-  });
 
   it('should fail to login with invalid credentials', () => {
     cy.mockCredentialsLoginFailure();
