@@ -30,7 +30,7 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className='focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full'>
+            <button className='focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full' data-cy='user-avatar'>
               <Avatar className='h-9 w-9 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all'>
                 <AvatarFallback className='bg-gradient-to-br from-blue-600 to-indigo-600 text-white'>
                   {initials}
@@ -42,7 +42,7 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
             <DropdownMenuLabel>
               <div className='flex flex-col space-y-1'>
                 <p className='text-sm font-medium leading-none'>Minha Conta</p>
-                <p className='text-xs leading-none text-muted-foreground'>{session?.user?.email}</p>
+                <p className='text-xs leading-none text-muted-foreground' data-cy="user-email">{session?.user?.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -52,6 +52,7 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              data-cy='logout-button'
               onClick={handleLogout}
               className='cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50'
             >
