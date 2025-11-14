@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ProductsUploadForm } from './ProductsUploadForm';
 import { ProductsTable } from './ProductsTable';
+import { AuthenticatedResource } from '@/components/AuthenticatedResource/AuthenticatedResource';
 
 export function ProductsPageClient() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -12,20 +13,22 @@ export function ProductsPageClient() {
   };
 
   return (
-    <div className='container mx-auto py-8 space-y-8'>
-      <div>
-        <h1 className='text-3xl font-bold tracking-tight'>Produtos</h1>
-        <p className='text-muted-foreground'>Gerencie os produtos do seu estabelecimento</p>
-      </div>
-
-      <div className='grid gap-8 lg:grid-cols-2'>
+    <AuthenticatedResource allowedRoles={["CLIENT"]}>
+      <div className='container mx-auto py-8 space-y-8'>
         <div>
-          <ProductsUploadForm onSuccess={handleUploadSuccess} />
+          <h1 className='text-3xl font-bold tracking-tight'>Produtos</h1>
+          <p className='text-muted-foreground'>Gerencie os produtos do seu estabelecimento</p>
         </div>
-        <div className='lg:col-span-2'>
-          <ProductsTable refreshTrigger={refreshTrigger} />
+
+        <div className='grid gap-8 lg:grid-cols-2'>
+          <div>
+            <ProductsUploadForm onSuccess={handleUploadSuccess} />
+          </div>
+          <div className='lg:col-span-2'>
+            <ProductsTable refreshTrigger={refreshTrigger} />
+          </div>
         </div>
       </div>
-    </div>
+    </AuthenticatedResource>
   );
 }
