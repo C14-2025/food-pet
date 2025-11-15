@@ -90,10 +90,10 @@ const createProducts = async () => {
   // 1. Create products
   const products = await prisma.product.createMany({
     data: [
-      { name: 'Margherita Pizza', price: 35.0, image: '/images/margherita.jpg' },
-      { name: 'Pepperoni Pizza', price: 42.0, image: '/images/pepperoni.jpg' },
-      { name: 'Coca-Cola 350ml', price: 6.0, image: '/images/coke.jpg' },
-      { name: 'Chocolate Cake', price: 15.0, image: '/images/cake.jpg' },
+      { name: 'Margherita Pizza', price: 35.0, image: 'https://i.imgur.com/y0lgXWs.jpg' },
+      { name: 'Pepperoni Pizza', price: 42.0, image: 'https://i.imgur.com/y0lgXWs.jpg' },
+      { name: 'Coca-Cola 350ml', price: 6.0, image: 'https://i.imgur.com/y0lgXWs.jpg' },
+      { name: 'Chocolate Cake', price: 15.0, image: 'https://i.imgur.com/y0lgXWs.jpg' },
     ],
   });
 
