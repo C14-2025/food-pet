@@ -1,4 +1,21 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    ports:
+      - '3000:3000'
+    environment:
+      - AUTH_TRUST_HOST=true
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://user:password@db:5432/mydb
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-your-secret-key-change-this-in-production}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_started
+
   jenkins:
     build:
       context: .
