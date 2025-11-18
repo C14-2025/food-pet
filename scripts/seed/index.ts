@@ -1,33 +1,10 @@
 import { PrismaClient, consumptionMethod } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+
+console.log('🚀 Starting seed script...');
 
 const prisma = new PrismaClient();
 
-const createUsers = async () => {
-  const hashedPassword = await bcrypt.hash('password123', 10);
-
-  const admin = await prisma.user.create({
-    data: {
-      name: 'Admin User',
-      email: 'admin@example.com',
-      password: hashedPassword,
-      role: 'ADMIN',
-    },
-  });
-
-  const client = await prisma.user.create({
-    data: {
-      name: 'Client User',
-      email: 'client@example.com',
-      password: hashedPassword,
-      role: 'USER',
-    },
-  });
-
-  return { admin, client };
-};
-
-const createOrders = async (clientUserId: number) => {
+const createOrders = async () => {
   // 2. Fetch products to use them in orders
   const allProducts = await prisma.product.findMany();
   // 3. Create an order with products
@@ -41,15 +18,13 @@ const createOrders = async (clientUserId: number) => {
             quantity: 1,
             price: 35.0,
             subtotal: 35.0,
-            productId: allProducts.find((p) => p.name === 'Margherita Pizza')!.id,
-            userId: clientUserId,
+            product: { connect: { id: allProducts.find((p) => p.name === 'Margherita Pizza')!.id } },
           },
           {
             quantity: 1,
             price: 6.0,
             subtotal: 6.0,
-            productId: allProducts.find((p) => p.name === 'Coca-Cola 350ml')!.id,
-            userId: clientUserId,
+            product: { connect: { id: allProducts.find((p) => p.name === 'Coca-Cola 350ml')!.id } },
           },
         ],
       },
@@ -67,15 +42,13 @@ const createOrders = async (clientUserId: number) => {
             quantity: 1,
             price: 42.0,
             subtotal: 42.0,
-            productId: allProducts.find((p) => p.name === 'Pepperoni Pizza')!.id,
-            userId: clientUserId,
+            product: { connect: { id: allProducts.find((p) => p.name === 'Pepperoni Pizza')!.id } },
           },
           {
             quantity: 1,
             price: 15.0,
             subtotal: 15.0,
-            productId: allProducts.find((p) => p.name === 'Chocolate Cake')!.id,
-            userId: clientUserId,
+            product: { connect: { id: allProducts.find((p) => p.name === 'Chocolate Cake')!.id } },
           },
         ],
       },
@@ -103,15 +76,11 @@ const createProducts = async () => {
 async function main() {
   console.log('🌱 Seeding database...');
 
-  const { admin, client } = await createUsers();
-
-  console.log(`✅ Created users: admin (${admin.email}) and client (${client.email})`);
-
   const products = await createProducts();
 
   console.log(`✅ Created ${products.count} products`);
 
-  const [order1, order2] = await createOrders(client.id);
+  const [order1, order2] = await createOrders();
 
   console.log('✅ Created orders with products:', { order1, order2 });
 }

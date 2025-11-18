@@ -44,7 +44,3 @@ next-env.d.ts
 #cypress
 /cypress/videos
 /cypress/screenshots
-
-test-report.html
-
-

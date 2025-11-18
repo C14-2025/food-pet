@@ -100,8 +100,6 @@ jobs:
         run: npm run test:e2e
         env:
           NODE_ENV: development
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: http://localhost:3000
 
       - name: Upload Cypress videos
         if: failure() # only upload if the job failed
