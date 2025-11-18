@@ -1,13 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { Prisma } from '@prisma/client';
-import { checkAuth } from '@/lib/auth/endpoints.auth.helper';
 
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
-  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
-  if (!authCheck.authorized) {
-    return authCheck.response;
-  }
   const { id } = await context.params;
 
   try {

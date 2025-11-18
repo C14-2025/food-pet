@@ -16,18 +16,6 @@ model Product {
   OrderProduct OrderProduct[]
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  orderProducts OrderProduct[]
-}
-
 model OrderProduct {
   id       Int   @id @default(autoincrement())
   quantity Int
@@ -39,9 +27,6 @@ model OrderProduct {
 
   order   Order @relation(fields: [orderId], references: [id])
   orderId Int
-
-  user   User?  @relation(fields: [userId], references: [id])
-  userId Int?
 }
 
 model Order {
@@ -57,9 +42,4 @@ model Order {
 enum consumptionMethod {
   TAKE_AWAY
   DINE_IN
-}
-
-enum UserRole {
-  USER
-  ADMIN
 }

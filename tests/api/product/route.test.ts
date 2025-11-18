@@ -48,19 +48,6 @@ jest.mock('@/lib/db', () => ({
   },
 }));
 
-jest.mock('@/lib/auth/endpoints.auth.helper', () => ({
-  checkAuth: jest.fn(() =>
-    Promise.resolve({
-      authorized: true,
-      session: {
-        user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
-        expires: '2024-12-31',
-      },
-      user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
-    }),
-  ),
-}));
-
 function createMockFile(csv: string) {
   return {
     arrayBuffer: async () => Buffer.from(csv, 'utf-8'),
@@ -74,8 +61,8 @@ describe('POST /api/product', () => {
       headers: { get: (_k: string) => 'application/json' },
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res?.json();
-    expect(res?.status).toBe(400);
+    const json = await res.json();
+    expect(res.status).toBe(400);
     expect(json.error).toMatch(/Content-Type must be multipart\/form-data/);
   });
 
@@ -90,7 +77,7 @@ describe('POST /api/product', () => {
       formData: async () => formData,
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res?.json();
+    const json = await res.json();
     expect(json.inserted).toBe(2);
   });
 
@@ -103,8 +90,8 @@ describe('POST /api/product', () => {
       formData: async () => formData,
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res?.json();
-    expect(res?.status).toBe(400);
+    const json = await res.json();
+    expect(res.status).toBe(400);
     expect(json.error).toMatch(/CSV file is required/);
   });
 
@@ -119,8 +106,8 @@ describe('POST /api/product', () => {
       formData: async () => formData,
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res?.json();
-    expect(res?.status).toBe(400);
+    const json = await res.json();
+    expect(res.status).toBe(400);
     expect(json.error).toMatch(/Invalid CSV format/);
   });
 
@@ -135,7 +122,7 @@ describe('POST /api/product', () => {
       formData: async () => formData,
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res?.json();
+    const json = await res.json();
     expect(json.inserted).toBe(1);
   });
 
@@ -158,7 +145,7 @@ describe('POST /api/product', () => {
     } as unknown as NextRequest;
 
     const res = await POST(req);
-    const json = await res?.json();
+    const json = await res.json();
 
     expect(json.inserted).toBe(1);
     expect(consoleErrorSpy).toHaveBeenCalledWith('Erro ao criar produto:', expect.any(Error));
@@ -172,8 +159,8 @@ describe('GET /api/products/[id]', () => {
     const req = {} as unknown as NextRequest;
     const res = await GET_BY_ID(req, { params: Promise.resolve({ id: '1' }) });
 
-    expect(res?.status).toBe(200);
-    const json = await res?.json();
+    expect(res.status).toBe(200);
+    const json = await res.json();
     expect(json).toMatchObject(MOCK_PRODUCT);
   });
 
@@ -181,8 +168,8 @@ describe('GET /api/products/[id]', () => {
     const req = {} as unknown as NextRequest;
     const res = await GET_BY_ID(req, { params: Promise.resolve({ id: '999' }) });
 
-    expect(res?.status).toBe(404);
-    const json = await res?.json();
+    expect(res.status).toBe(404);
+    const json = await res.json();
     expect(json.error).toMatch(/not found/i);
   });
 
@@ -190,8 +177,8 @@ describe('GET /api/products/[id]', () => {
     const req = {} as unknown as NextRequest;
     const res = await GET_BY_ID(req, { params: Promise.resolve({ id: 'abc' }) });
 
-    expect(res?.status).toBe(500);
-    const json = await res?.json();
+    expect(res.status).toBe(500);
+    const json = await res.json();
 
     expect(json.error).toMatch(/invalid id/i);
   });
@@ -202,7 +189,7 @@ describe('DELETE /api/products/[id]', () => {
     const req = {} as unknown as NextRequest;
     const res = await DELETE(req, { params: Promise.resolve({ id: '1' }) });
 
-    expect(res?.status).toBe(204);
+    expect(res.status).toBe(204);
     expect(res.body).toBe(null);
   });
 
@@ -210,8 +197,8 @@ describe('DELETE /api/products/[id]', () => {
     const req = {} as unknown as NextRequest;
     const res = await DELETE(req, { params: Promise.resolve({ id: '999' }) });
 
-    expect(res?.status).toBe(404);
-    const json = await res?.json();
+    expect(res.status).toBe(404);
+    const json = await res.json();
     expect(json.error).toMatch(/not found/i);
   });
 
@@ -219,8 +206,8 @@ describe('DELETE /api/products/[id]', () => {
     const req = {} as unknown as NextRequest;
     const res = await DELETE(req, { params: Promise.resolve({ id: 'abc' }) });
 
-    expect(res?.status).toBe(400);
-    const json = await res?.json();
+    expect(res.status).toBe(400);
+    const json = await res.json();
     expect(json.error).toMatch(/invalid product id/i);
   });
 });
@@ -238,9 +225,9 @@ describe('GET /api/product', () => {
     prisma.product.findMany = jest.fn().mockResolvedValue(mockProducts);
 
     const res = await GET_ALL();
-    const json = await res?.json();
+    const json = await res.json();
 
-    expect(res?.status).toBe(200);
+    expect(res.status).toBe(200);
     expect(json).toEqual(mockProducts);
     expect(json).toHaveLength(3);
     expect(prisma.product.findMany).toHaveBeenCalled();
@@ -250,9 +237,9 @@ describe('GET /api/product', () => {
     prisma.product.findMany = jest.fn().mockRejectedValue(new Error('Database error'));
 
     const res = await GET_ALL();
-    const json = await res?.json();
+    const json = await res.json();
 
-    expect(res?.status).toBe(500);
+    expect(res.status).toBe(500);
     expect(json.error).toMatch(/Failed to fetch products/);
   });
 });

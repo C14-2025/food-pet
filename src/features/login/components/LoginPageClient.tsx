@@ -1,8 +1,6 @@
 'use client';
 
 import type React from 'react';
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,38 +9,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 export function LoginPageClient() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const [, setIsLoggedIn] = useLocalStorage<boolean>('isLoggedIn', false);
+
+  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError('');
-    setIsLoading(true);
-
-    try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('Credenciais inválidas. Por favor, tente novamente.');
-      } else {
-        router.push('/');
-        router.refresh();
-      }
-    } catch (error) {
-      console.log('Login error:', error);
-      setError('Ocorreu um erro. Por favor, tente novamente.');
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoggedIn(true);
+    router.push('/');
   };
 
   return (
@@ -56,49 +33,46 @@ export function LoginPageClient() {
             </CardDescription>
           </CardHeader>
           <CardContent className='space-y-4'>
-            {error && (
-              <Alert className='border-red-200 bg-red-50'>
-                <AlertCircle className='h-4 w-4 text-red-600' />
-                <AlertDescription className='text-red-800'>{error}</AlertDescription>
-              </Alert>
-            )}
+            <Alert className='border-amber-200 bg-amber-50'>
+              <AlertCircle className='h-4 w-4 text-amber-600' />
+              <AlertDescription className='text-amber-800'>
+                A fucionalidade de login não está implementada nesta versão da API. Você pode continuar navegando como
+                visitante.
+              </AlertDescription>
+            </Alert>
 
-            <form onSubmit={handleLogin} className='space-y-4'>
+            <form onSubmit={(event) => handleLogin(event)} className='space-y-4'>
               <div className='space-y-2'>
-                <Label htmlFor='email'>Email</Label>
+                <Label htmlFor='username'>Username</Label>
                 <Input
-                  id='email'
-                  type='email'
-                  placeholder='seu@email.com'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isLoading}
+                  id='username'
+                  type='text'
+                  placeholder='Enter your username'
+                  value='Guest1978'
                   className='transition-all duration-200 focus:ring-2 focus:ring-blue-500'
+                  disabled
                 />
               </div>
 
               <div className='space-y-2'>
-                <Label htmlFor='password'>Senha</Label>
+                <Label htmlFor='password'>Password</Label>
                 <Input
                   id='password'
                   type='password'
-                  placeholder='Digite sua senha'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder='Enter your password'
+                  value='guest1978'
                   required
-                  disabled={isLoading}
                   className='transition-all duration-200 focus:ring-2 focus:ring-blue-500'
+                  disabled
                 />
               </div>
 
               <Button
                 data-testid='login-button'
                 type='submit'
-                disabled={isLoading}
-                className='w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50'
+                className='w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200'
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                Entrar
               </Button>
             </form>
           </CardContent>
