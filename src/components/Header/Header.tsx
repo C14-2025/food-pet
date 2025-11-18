@@ -25,7 +25,7 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
           <h1 className='text-2xl font-bold'>Sua Aplicação</h1>
           {/* @ts-ignore */}
           {session?.user?.role && (
-            /* @ts-ignore */
+            //@ts-ignore
             <span className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full'>{session.user.role}</span>
           )}
         </div>
