@@ -40,6 +40,19 @@ jest.mock('@/lib/db', () => {
   return { prisma };
 });
 
+jest.mock('@/lib/auth/endpoints.auth.helper', () => ({
+  checkAuth: jest.fn(() =>
+    Promise.resolve({
+      authorized: true,
+      session: {
+        user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+        expires: '2024-12-31',
+      },
+      user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+    }),
+  ),
+}));
+
 describe('POST /api/order', () => {
   it('should create an order with valid payload', async () => {
     const req = {
@@ -49,8 +62,8 @@ describe('POST /api/order', () => {
       }),
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res.json();
-    expect(res.status).toBe(200);
+    const json = await res?.json();
+    expect(res?.status).toBe(200);
     expect(json).toHaveProperty('id');
   });
 
@@ -62,8 +75,8 @@ describe('POST /api/order', () => {
       }),
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res.json();
-    expect(res.status).toBe(400);
+    const json = await res?.json();
+    expect(res?.status).toBe(400);
     expect(json.error).toMatch(/consumptionMethod/);
   });
 
@@ -75,8 +88,8 @@ describe('POST /api/order', () => {
       }),
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res.json();
-    expect(res.status).toBe(400);
+    const json = await res?.json();
+    expect(res?.status).toBe(400);
     expect(json.error).toMatch(/must have at least one product/);
   });
 
@@ -88,8 +101,8 @@ describe('POST /api/order', () => {
       }),
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res.json();
-    expect(res.status).toBe(400);
+    const json = await res?.json();
+    expect(res?.status).toBe(400);
     expect(json.error).toMatch(/quantity should be positive/);
   });
 
@@ -103,8 +116,8 @@ describe('POST /api/order', () => {
       }),
     } as unknown as NextRequest;
     const res = await POST(req);
-    const json = await res.json();
-    expect(res.status).toBe(500);
+    const json = await res?.json();
+    expect(res?.status).toBe(500);
     expect(json.error).toMatch(/Failed to create order/);
   });
 });
@@ -120,8 +133,8 @@ describe('GET api/order/[id]', () => {
     const req = {} as unknown as NextRequest;
     const params = Promise.resolve({ id: '1' });
     const res = await GET(req, { params });
-    const json = await res.json();
-    expect(res.status).toBe(200);
+    const json = await res?.json();
+    expect(res?.status).toBe(200);
     expect(json).toHaveProperty('id', 1);
   });
 
@@ -130,8 +143,8 @@ describe('GET api/order/[id]', () => {
     const req = {} as unknown as NextRequest;
     const params = Promise.resolve({ id: '999' });
     const res = await GET(req, { params });
-    const json = await res.json();
-    expect(res.status).toBe(404);
+    const json = await res?.json();
+    expect(res?.status).toBe(404);
     expect(json.error).toMatch(/Order not found/);
   });
 });
@@ -147,7 +160,7 @@ describe('DELETE api/order/[id]', () => {
 
     const res = await DELETE(req, { params });
 
-    expect(res.status).toBe(204);
+    expect(res?.status).toBe(204);
   });
 
   it('should return 400 for invalid id', async () => {
@@ -156,7 +169,7 @@ describe('DELETE api/order/[id]', () => {
 
     const res = await DELETE(req, { params });
 
-    expect(res.status).toBe(400);
+    expect(res?.status).toBe(400);
   });
 });
 
@@ -180,9 +193,9 @@ describe('GET /api/order', () => {
     prisma.order.findMany = jest.fn().mockResolvedValue(mockOrders);
 
     const res = await GET_ALL();
-    const json = await res.json();
+    const json = await res?.json();
 
-    expect(res.status).toBe(200);
+    expect(res?.status).toBe(200);
     expect(json).toEqual(mockOrders);
     expect(json).toHaveLength(2);
     expect(prisma.order.findMany).toHaveBeenCalledWith({
@@ -194,9 +207,9 @@ describe('GET /api/order', () => {
     prisma.order.findMany = jest.fn().mockRejectedValue(new Error('Database error'));
 
     const res = await GET_ALL();
-    const json = await res.json();
+    const json = await res?.json();
 
-    expect(res.status).toBe(500);
+    expect(res?.status).toBe(500);
     expect(json.error).toMatch(/Failed to retrieve orders/);
   });
 });
