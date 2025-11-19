@@ -15,6 +15,19 @@ jest.mock('@/lib/db', () => ({
   },
 }));
 
+jest.mock('@/lib/auth/endpoints.auth.helper', () => ({
+  checkAuth: jest.fn(() =>
+    Promise.resolve({
+      authorized: true,
+      session: {
+        user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+        expires: '2024-12-31',
+      },
+      user: { id: '1', email: 'admin@example.com', role: 'ADMIN' as const },
+    }),
+  ),
+}));
+
 describe('GET /api/sales-summary', () => {
   beforeAll(() => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -30,7 +43,7 @@ describe('GET /api/sales-summary', () => {
 
     const req = new NextRequest('http://localhost/api/sales-summary');
     const res = await GET(req);
-    const data = await res.json();
+    const data = await res?.json();
 
     expect(data.totalOrders).toBe(5);
     expect(data.totalProducts).toBe(10);
@@ -45,7 +58,7 @@ describe('GET /api/sales-summary', () => {
 
     const req = new NextRequest('http://localhost/api/sales-summary?period=day');
     const res = await GET(req);
-    const data = await res.json();
+    const data = await res?.json();
 
     expect(data.totalOrders).toBe(2);
     expect(data.totalProducts).toBe(6);
@@ -60,7 +73,7 @@ describe('GET /api/sales-summary', () => {
 
     const req = new NextRequest('http://localhost/api/sales-summary?period=week');
     const res = await GET(req);
-    const data = await res.json();
+    const data = await res?.json();
 
     expect(data.totalOrders).toBe(8);
     expect(data.totalProducts).toBe(25);
@@ -75,7 +88,7 @@ describe('GET /api/sales-summary', () => {
 
     const req = new NextRequest('http://localhost/api/sales-summary?period=month');
     const res = await GET(req);
-    const data = await res.json();
+    const data = await res?.json();
 
     expect(data.totalOrders).toBe(15);
     expect(data.totalProducts).toBe(50);
@@ -90,7 +103,7 @@ describe('GET /api/sales-summary', () => {
 
     const req = new NextRequest('http://localhost/api/sales-summary?from=2025-09-01&to=2025-09-21');
     const res = await GET(req);
-    const data = await res.json();
+    const data = await res?.json();
 
     expect(data.totalOrders).toBe(3);
     expect(data.totalProducts).toBe(8);
@@ -101,18 +114,18 @@ describe('GET /api/sales-summary', () => {
   it('returns 400 for invalid period', async () => {
     const req = new NextRequest('http://localhost/api/sales-summary?period=invalid');
     const res = await GET(req);
-    expect(res.status).toBe(400);
+    expect(res?.status).toBe(400);
 
-    const data = await res.json();
+    const data = await res?.json();
     expect(data.error).toBe('Invalid period');
   });
 
   it('returns 400 for invalid from/to date', async () => {
     const req = new NextRequest('http://localhost/api/sales-summary?from=abc&to=def');
     const res = await GET(req);
-    expect(res.status).toBe(400);
+    expect(res?.status).toBe(400);
 
-    const data = await res.json();
+    const data = await res?.json();
     expect(data.error).toBe('Invalid date format. Use YYYY-MM-DD.');
   });
 
@@ -121,9 +134,9 @@ describe('GET /api/sales-summary', () => {
 
     const req = new NextRequest('http://localhost/api/sales-summary');
     const res = await GET(req);
-    expect(res.status).toBe(500);
+    expect(res?.status).toBe(500);
 
-    const data = await res.json();
+    const data = await res?.json();
     expect(data.error).toBe('Internal server error');
   });
 });

@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { parse } from 'csv-parse/sync';
+import { checkAuth } from '@/lib/auth/endpoints.auth.helper';
 
 export async function POST(req: NextRequest) {
+  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
+  if (!authCheck.authorized) {
+    return authCheck.response;
+  }
+
   const contentType = req.headers.get('content-type') || '';
   if (!contentType.includes('multipart/form-data')) {
     return NextResponse.json({ error: 'Content-Type must be multipart/form-data' }, { status: 400 });

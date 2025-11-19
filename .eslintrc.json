@@ -19,7 +19,9 @@
       {
         "endOfLine": "auto"
       }
-    ]
+    ],
+    //This will allow us to use ts-ignore when necessary
+    "@typescript-eslint/ban-ts-comment": "off"
   },
   "overrides": [
     {

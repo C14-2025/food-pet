@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { checkAuth } from '@/lib/auth/endpoints.auth.helper';
 
 export async function GET(request: NextRequest) {
+  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
+  if (!authCheck.authorized) {
+    return authCheck.response;
+  }
   try {
     const { searchParams } = new URL(request.url);
 

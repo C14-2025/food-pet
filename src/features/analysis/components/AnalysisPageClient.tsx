@@ -5,7 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CalendarRange } from '@/components/ui/calendar/CalendarRange';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency, formatDisplayDate } from '@/utils';
+import { formatCurrency } from '@/utils';
+import { parseLocalDate, formatDateLocal, formatDisplayDate } from '@/utils/date';
+import { ChartContainer } from '@/components/ui/chart';
 
 type SummaryResponse = {
   period: string;
@@ -29,14 +31,22 @@ export const AnalysisPageClient: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mapPeriodToLabel = (period: string) => {
-    if (period === 'all') return 'Todos os períodos';
-    if (period === 'day') return 'Hoje';
-    if (period === 'week') return 'Última semana';
-    if (period == 'month') return 'Último mês';
+  const mapPeriodToLabel = (p: string) => {
+    switch (p) {
+      case 'all':
+        return 'Todos os períodos';
+      case 'day':
+        return 'Hoje';
+      case 'week':
+        return 'Última semana';
+      case 'month':
+        return 'Últimos 30 dias';
+      default:
+        return '';
+    }
   };
 
-  async function fetchSummary() {
+  const fetchSummary = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -51,66 +61,40 @@ export const AnalysisPageClient: React.FC = () => {
 
       const url = `/api/sales-summary${params.toString() ? `?${params.toString()}` : ''}`;
       const res = await fetch(url, { headers: { Accept: 'application/json' } });
-      const text = await res.text();
-      let json: unknown;
-      try {
-        json = text ? JSON.parse(text) : null;
-      } catch {
-        json = { message: text } as unknown;
-      }
+      const json = await res.json();
 
-      const getJsonMessage = (j: unknown): string | undefined => {
-        if (!j || typeof j !== 'object') return undefined;
-        const obj = j as Record<string, unknown>;
-        const maybe = obj.error ?? obj.message;
-        return typeof maybe === 'string' ? maybe : undefined;
-      };
+      if (!res.ok) throw new Error(json?.error || json?.message || `Error ${res.status}`);
 
-      if (!res.ok) {
-        const msg = getJsonMessage(json) ?? `Error ${res.status}`;
-        throw new Error(msg);
-      }
-
-      if (json && typeof json === 'object') {
-        setData(json as SummaryResponse);
-      } else {
-        setData(null);
-      }
+      setData(json);
     } catch (err: unknown) {
-      const getErrorMessage = (e: unknown) => {
-        if (!e) return 'Erro ao buscar resumo';
-        if (e instanceof Error) return e.message;
-        if (typeof e === 'string') return e;
-        try {
-          return JSON.stringify(e);
-        } catch {
-          return 'Erro ao buscar resumo';
-        }
-      };
-      setError(getErrorMessage(err));
+      if (err instanceof Error) setError(err.message);
+      else setError('Erro ao buscar resumo');
       setData(null);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     setMounted(true);
     fetchSummary();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!mounted) return null;
+
+  const chartData = [
+    { name: 'Pedidos', value: data?.totalOrders ?? 0, color: '#4ade80' },
+    { name: 'Produtos', value: data?.totalProducts ?? 0, color: '#60a5fa' },
+    { name: 'Receita', value: data?.totalProfit ?? 0, color: '#facc15' },
+  ];
 
   return (
     <div className='space-y-6'>
       <Card>
         <CardHeader className='flex items-center justify-between'>
-          <div>
-            <CardTitle>Resumo de Vendas</CardTitle>
-          </div>
+          <CardTitle>Resumo de Vendas</CardTitle>
           <div className='flex items-center gap-3'>
-            <Select value={period} onValueChange={(newValue) => setPeriod(newValue)}>
+            <Select value={period} onValueChange={setPeriod}>
               <SelectTrigger size='sm'>
                 <SelectValue>{mapPeriodToLabel(period)}</SelectValue>
               </SelectTrigger>
@@ -118,7 +102,7 @@ export const AnalysisPageClient: React.FC = () => {
                 <SelectItem value='all'>Todos os períodos</SelectItem>
                 <SelectItem value='day'>Hoje</SelectItem>
                 <SelectItem value='week'>Última semana</SelectItem>
-                <SelectItem value='month'>Útimos 30 dias</SelectItem>
+                <SelectItem value='month'>Últimos 30 dias</SelectItem>
               </SelectContent>
             </Select>
 
@@ -132,27 +116,21 @@ export const AnalysisPageClient: React.FC = () => {
                   setShowCalendar((s) => !s);
                 }}
               >
-                {showCalendar
-                  ? tempFrom && tempTo
-                    ? `${formatDisplayDate(tempFrom)} à ${formatDisplayDate(tempTo)}`
-                    : 'Selecionar intervalo'
-                  : from && to
-                    ? `${formatDisplayDate(from)} à ${formatDisplayDate(to)}`
-                    : 'Selecionar intervalo'}
+                {tempFrom && tempTo
+                  ? `${formatDisplayDate(tempFrom)} à ${formatDisplayDate(tempTo)}`
+                  : 'Selecionar intervalo'}
               </button>
+
               {showCalendar && (
                 <div className='absolute z-50 mt-2'>
                   <div className='bg-white shadow rounded-md'>
                     <CalendarRange
-                      {...({
-                        from: tempFrom ? new Date(tempFrom) : undefined,
-                        to: tempTo ? new Date(tempTo) : undefined,
-                        onChange: (r: { from: any; to: any }) => {
-                          const fmt = (d?: Date | null) => (d ? d.toISOString().slice(0, 10) : '');
-                          setTempFrom(fmt(r.from ?? null));
-                          setTempTo(fmt(r.to ?? null));
-                        },
-                      } as any)}
+                      from={parseLocalDate(tempFrom)}
+                      to={parseLocalDate(tempTo)}
+                      onChange={(r) => {
+                        setTempFrom(r.from ? formatDateLocal(r.from) : '');
+                        setTempTo(r.to ? formatDateLocal(r.to) : '');
+                      }}
                     />
                     <div className='flex gap-2 justify-end p-2'>
                       <Button
@@ -172,6 +150,7 @@ export const AnalysisPageClient: React.FC = () => {
                           setFrom(tempFrom);
                           setTo(tempTo);
                           setShowCalendar(false);
+                          fetchSummary();
                         }}
                         disabled={loading}
                       >
@@ -201,45 +180,64 @@ export const AnalysisPageClient: React.FC = () => {
             </Button>
           </div>
         </CardHeader>
+
         <CardContent>
           {error && <div className='text-destructive'>{error}</div>}
 
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
-            <div>
-              <Card className='p-4'>
-                <CardTitle className='text-sm'>Pedidos</CardTitle>
-                <div className='mt-2 text-2xl font-semibold'>{data ? data.totalOrders : '—'}</div>
-                <div className='text-sm text-muted-foreground mt-1'>Número total de pedidos</div>
-              </Card>
-            </div>
+            <Card className='p-4'>
+              <CardTitle className='text-sm'>Pedidos</CardTitle>
+              <div className='mt-2 text-2xl font-semibold'>{data?.totalOrders ?? '—'}</div>
+              <div className='text-sm text-muted-foreground mt-1'>Número total de pedidos</div>
+            </Card>
 
-            <div>
-              <Card className='p-4'>
-                <CardTitle className='text-sm'>Produtos vendidos</CardTitle>
-                <div className='mt-2 text-2xl font-semibold'>{data ? data.totalProducts : '—'}</div>
-                <div className='text-sm text-muted-foreground mt-1'>Quantidade total de produtos</div>
-              </Card>
-            </div>
+            <Card className='p-4'>
+              <CardTitle className='text-sm'>Produtos vendidos</CardTitle>
+              <div className='mt-2 text-2xl font-semibold'>{data?.totalProducts ?? '—'}</div>
+              <div className='text-sm text-muted-foreground mt-1'>Quantidade total de produtos</div>
+            </Card>
 
-            <div>
-              <Card className='p-4'>
-                <CardTitle className='text-sm'>Receita</CardTitle>
-                <div className='mt-2 text-2xl font-semibold'>{data ? formatCurrency(data.totalProfit) : '—'}</div>
-                <div className='text-sm text-muted-foreground mt-1'>Receita total no período</div>
-              </Card>
-            </div>
-          </div>
-
-          <div className='mt-6'>
-            <Card>
-              <CardHeader>
-                <CardTitle className='text-sm'>Detalhes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <pre className='overflow-auto text-xs'>{data ? JSON.stringify(data, null, 2) : 'Sem dados'}</pre>
-              </CardContent>
+            <Card className='p-4'>
+              <CardTitle className='text-sm'>Receita</CardTitle>
+              <div className='mt-2 text-2xl font-semibold'>{data ? formatCurrency(data.totalProfit) : '—'}</div>
+              <div className='text-sm text-muted-foreground mt-1'>Receita total no período</div>
             </Card>
           </div>
+
+          {/* Gráfico */}
+          <Card className='mt-6'>
+            <CardHeader>
+              <CardTitle>Resumo Visual</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                className='h-[300px] w-full'
+                config={
+                  {
+                    type: 'bar',
+                    data: {
+                      labels: chartData.map((c) => c.name),
+                      datasets: [
+                        {
+                          label: 'Total',
+                          data: chartData.map((c) => c.value),
+                          backgroundColor: chartData.map((c) => c.color),
+                        },
+                      ],
+                    },
+                    options: {
+                      responsive: true,
+                      plugins: {
+                        legend: { display: false },
+                      },
+                    },
+                  } as any
+                }
+              >
+                <div />
+              </ChartContainer>
+            </CardContent>
+          </Card>
         </CardContent>
       </Card>
     </div>

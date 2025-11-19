@@ -1,2 +1,2 @@
-export * from './formatCurrency';
-export * from './formatDisplayDate';
+export * from './date';
+export * from './format-currency';

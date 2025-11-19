@@ -12,8 +12,8 @@ const jestConfig = {
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: { jsx: 'react-jsx' } }],
   },
-  transformIgnorePatterns: ['/node_modules/(?!(lucide-react)/)'],
-  collectCoverageFrom: ['src/app/api/**/route.ts', '!src/**/*.spec.ts', '!src/**/*.test.ts'],
+  transformIgnorePatterns: ['node_modules/(?!(next-auth|@auth|oauth4webapi|lucide-react)/)'],
+  collectCoverageFrom: ['src/app/api/**/route.ts', '!src/**/*.spec.ts', '!src/**/*.test.ts', '!src/app/api/auth/**'],
   reporters: ['default', 'jest-html-reporter'],
 };
 
