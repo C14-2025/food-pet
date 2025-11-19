@@ -38,7 +38,6 @@ COPY --from=builder /app/node_modules ./node_modules
 RUN chown -R nextjs:nodejs /app
 
 USER nextjs
-
 EXPOSE 3000
 
 ENV PORT=3000
