@@ -14,7 +14,7 @@ export function ProductsPageClient() {
 
   return (
     <AuthenticatedResource allowedRoles={['CLIENT']}>
-      <div className='container mx-auto py-8 space-y-8'>
+      <div className='container mx-auto py-8 space-y-8 px-4'>
         <div>
           <h1 className='text-3xl font-bold tracking-tight'>Produtos</h1>
           <p className='text-muted-foreground'>Gerencie os produtos do seu estabelecimento</p>
