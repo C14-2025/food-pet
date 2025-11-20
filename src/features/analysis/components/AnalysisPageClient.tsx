@@ -9,6 +9,7 @@ import { formatCurrency, mapPeriodToLabel } from '@/utils';
 import { parseLocalDate, formatDateLocal, formatDisplayDate } from '@/utils/date';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 import { Tooltip, Bar, ResponsiveContainer, XAxis, YAxis, ComposedChart, Legend, Line } from 'recharts';
+import { OrdersListPanel } from '@/features/orders/components/OrdersListPanel';
 
 type SummaryResponse = {
   period: string;
@@ -249,6 +250,8 @@ export const AnalysisPageClient: React.FC = () => {
           </Card>
         </CardContent>
       </Card>
+
+      <OrdersListPanel />
     </div>
   );
 };
