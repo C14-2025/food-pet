@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RefreshCcw } from 'lucide-react';
@@ -13,6 +14,8 @@ export function OrdersPageClient() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
 
   const refresh = async () => {
     try {
@@ -36,7 +39,12 @@ export function OrdersPageClient() {
         Pedidos
       </h1>
 
-      <CreateOrderForm onCreated={() => refresh()} />
+      <CreateOrderForm
+        onCreated={async () => {
+          await refresh();
+          router.push('/payment');
+        }}
+      />
 
       <Card>
         <CardHeader className='flex flex-row items-center justify-between'>
