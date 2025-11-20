@@ -1,17 +1,17 @@
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin"
+  systemMessage: 'Jenkins configured automatically by Jenkins Configuration as Code plugin'
   numExecutors: 2
   scmCheckoutRetryCount: 2
   mode: NORMAL
   disabledAdministrativeMonitors:
-    - "jenkins.model.InvalidBuildsDir"
+    - 'jenkins.model.InvalidBuildsDir'
 
   securityRealm:
     local:
       allowsSignup: false
       users:
-        - id: "admin"
-          password: "admin"
+        - id: 'admin'
+          password: 'admin'
 
   authorizationStrategy:
     loggedInUsersCanDoAnything:
@@ -20,12 +20,12 @@ jenkins:
 tool:
   nodejs:
     installations:
-      - name: "NodeJS 22"
+      - name: 'NodeJS 22'
         properties:
           - installSource:
               installers:
                 - nodeJSInstaller:
-                    id: "22.11.0"
+                    id: '22.11.0'
                     npmPackagesRefreshHours: 72
 
 jobs:
@@ -53,6 +53,6 @@ unclassified:
 
   sonarGlobalConfiguration:
     installations:
-      - name: "SonarQubeServer"
-        serverUrl: "http://sonarqube:9000"
-        credentialsId: "sonarqube-token"
+      - name: 'SonarQubeServer'
+        serverUrl: 'http://sonarqube:9000'
+        credentialsId: 'sonarqube-token'
