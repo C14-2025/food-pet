@@ -1,16 +1,27 @@
 {
-  "extends": ["next/core-web-vitals"],
-  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "react", "react-hooks", "prettier"],
   "rules": {
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "prettier/prettier": [
+      "error",
       {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "endOfLine": "auto"
       }
     ],
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    //This will allow us to use ts-ignore when necessary
+    "@typescript-eslint/ban-ts-comment": "off"
   },
   "overrides": [
     {

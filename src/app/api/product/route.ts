@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   if (!authCheck.authorized) {
     return authCheck.response;
   }
-  
+
   const contentType = req.headers.get('content-type') || '';
   if (!contentType.includes('multipart/form-data')) {
     return NextResponse.json({ error: 'Content-Type must be multipart/form-data' }, { status: 400 });

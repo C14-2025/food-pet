@@ -3,8 +3,6 @@ describe('Login Page', () => {
     cy.visit('/login');
   });
 
-
-
   it('should fail to login with invalid credentials', () => {
     cy.mockCredentialsLoginFailure();
 
@@ -12,9 +10,7 @@ describe('Login Page', () => {
     cy.get('#password').type('wrongpassword');
     cy.get('[data-testid="login-button"]').click();
 
-    cy.get('[role="alert"]')
-      .should('be.visible')
-      .and('contain', 'Credenciais inválidas. Por favor, tente novamente.');
+    cy.get('[role="alert"]').should('be.visible').and('contain', 'Credenciais inválidas. Por favor, tente novamente.');
 
     cy.url().should('include', '/login');
   });

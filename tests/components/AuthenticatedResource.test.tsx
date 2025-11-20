@@ -22,7 +22,7 @@ jest.mock('next-auth/react', () => ({
 
 // Mock the Header component to simplify testing
 jest.mock('@/components/Header/Header', () => ({
-  Header: () => <div data-testid="header">Header</div>,
+  Header: () => <div data-testid='header'>Header</div>,
 }));
 
 jest.mock('next-auth/react', () => ({
@@ -36,7 +36,7 @@ describe('AuthenticatedResource to protect content if user is not logged in', ()
   const backMock = jest.fn();
 
   beforeEach(() => {
-    (useRouter as jest.Mock).mockReturnValue({ 
+    (useRouter as jest.Mock).mockReturnValue({
       push: pushMock,
       back: backMock,
     });
@@ -98,7 +98,7 @@ describe('AuthenticatedResource to protect content if user is not logged in', ()
 
     // Should not render children
     expect(screen.queryByTestId('protected')).not.toBeInTheDocument();
-    
+
     // Should redirect
     await waitFor(() => {
       expect(pushMock).toHaveBeenCalledWith('/login');
@@ -149,7 +149,7 @@ describe('AuthenticatedResource to protect content if user is not logged in', ()
 
     // Should not render children
     expect(screen.queryByTestId('protected')).not.toBeInTheDocument();
-    
+
     // Should redirect back
     await waitFor(() => {
       expect(backMock).toHaveBeenCalled();

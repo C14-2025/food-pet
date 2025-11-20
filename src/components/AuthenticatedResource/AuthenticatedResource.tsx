@@ -23,12 +23,12 @@ export const AuthenticatedResource: FC<AuthenticatedResourceProps> = ({ children
       router.push('/login');
       return;
     }
-    {/* @ts-ignore */}
+    //@ts-ignore
     if (allowedRoles && session?.user?.role) {
-      {/* @ts-ignore */}
+      //@ts-ignore
       if (!allowedRoles.includes(session.user.role)) {
         //if user not allowed, send back to where they were
-        router.back()
+        router.back();
       }
     }
   }, [status, session, allowedRoles, router]);
@@ -47,7 +47,8 @@ export const AuthenticatedResource: FC<AuthenticatedResourceProps> = ({ children
   if (status === 'unauthenticated') {
     return null;
   }
-  {/* @ts-ignore */}
+
+  //@ts-ignore
   if (allowedRoles && session?.user?.role && !allowedRoles.includes(session.user.role)) {
     return null;
   }

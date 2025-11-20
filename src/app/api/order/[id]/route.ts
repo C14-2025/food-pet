@@ -34,7 +34,7 @@ export async function DELETE(_req: NextRequest, context: { params: Promise<{ id:
   if (!authCheck.authorized) {
     return authCheck.response;
   }
-  
+
   const { id } = await context.params;
 
   if (Number.isNaN(Number(id))) {
