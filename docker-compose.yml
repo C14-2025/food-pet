@@ -2,7 +2,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.app
+      dockerfile: ./docker/Dockerfile.app
     ports:
       - "3000:3000"
     environment:
@@ -19,7 +19,7 @@ services:
   jenkins:
     build:
       context: .
-      dockerfile: Dockerfile.jenkins
+      dockerfile: ./docker/Dockerfile.jenkins
     user: root
     ports:
       - "8080:8080"
@@ -65,7 +65,7 @@ services:
   setup:
     build:
       context: .
-      dockerfile: Dockerfile.setup
+      dockerfile: ./docker/Dockerfile.setup
     depends_on:
       - jenkins
       - sonarqube
