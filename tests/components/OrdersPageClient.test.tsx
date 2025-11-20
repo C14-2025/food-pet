@@ -6,6 +6,14 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  }),
+}));
+
 // 1) Mocks rápidos de libs “chatas” (sem mexer no config)
 jest.mock('lucide-react', () => ({ RefreshCcw: () => null }));
 jest.mock('@/components/ui/button', () => ({
