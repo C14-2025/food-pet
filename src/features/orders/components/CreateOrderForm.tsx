@@ -140,7 +140,7 @@ export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
                       <TableRow key={idx}>
                         <TableCell className='min-w-[220px]'>
                           <Select
-                            value={typeof row.productId === 'number' ? String(row.productId) : undefined}
+                            value={row.productId === '' ? '' : String(row.productId)}
                             onValueChange={(v) => updateItem(idx, { productId: Number(v) })}
                           >
                             <SelectTrigger>
