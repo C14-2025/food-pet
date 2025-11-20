@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CalendarRange } from '@/components/ui/calendar/CalendarRange';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { formatCurrency } from '@/utils';
+import { formatCurrency, mapPeriodToLabel } from '@/utils';
 import { parseLocalDate, formatDateLocal, formatDisplayDate } from '@/utils/date';
-import { ChartContainer } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer } from '@/components/ui/chart';
+import { Tooltip, Bar, ResponsiveContainer, XAxis, YAxis, ComposedChart, Legend, Line } from 'recharts';
 
 type SummaryResponse = {
   period: string;
@@ -16,6 +17,21 @@ type SummaryResponse = {
   totalOrders: number;
   totalProducts: number;
   totalProfit: number;
+};
+
+const chartConfig: ChartConfig = {
+  orders: {
+    label: 'Pedidos',
+    color: '#3b82f6',
+  },
+  products: {
+    label: 'Produtos',
+    color: '#93c5fd',
+  },
+  revenue: {
+    label: 'Receita',
+    color: '#1e40af',
+  },
 };
 
 export const AnalysisPageClient: React.FC = () => {
@@ -31,20 +47,15 @@ export const AnalysisPageClient: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const mapPeriodToLabel = (p: string) => {
-    switch (p) {
-      case 'all':
-        return 'Todos os períodos';
-      case 'day':
-        return 'Hoje';
-      case 'week':
-        return 'Última semana';
-      case 'month':
-        return 'Últimos 30 dias';
-      default:
-        return '';
-    }
-  };
+  const chartData = [
+    {
+      name: data ? mapPeriodToLabel(data.period) : 'Resumo',
+      Pedidos: data?.totalOrders ?? 0,
+      Produtos: data?.totalProducts ?? 0,
+      Receita: data?.totalProfit ?? 0,
+      ReceitaPorPedido: data && data.totalOrders ? data.totalProfit / data.totalOrders : 0,
+    },
+  ];
 
   const fetchSummary = async () => {
     try {
@@ -78,15 +89,10 @@ export const AnalysisPageClient: React.FC = () => {
   useEffect(() => {
     setMounted(true);
     fetchSummary();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!mounted) return null;
-
-  const chartData = [
-    { name: 'Pedidos', value: data?.totalOrders ?? 0, color: '#4ade80' },
-    { name: 'Produtos', value: data?.totalProducts ?? 0, color: '#60a5fa' },
-    { name: 'Receita', value: data?.totalProfit ?? 0, color: '#facc15' },
-  ];
 
   return (
     <div className='space-y-6'>
@@ -168,6 +174,9 @@ export const AnalysisPageClient: React.FC = () => {
               onClick={() => {
                 setFrom('');
                 setTo('');
+                setTempFrom('');
+                setTempTo('');
+                setShowCalendar(false);
                 setPeriod('month');
                 fetchSummary();
               }}
@@ -204,37 +213,37 @@ export const AnalysisPageClient: React.FC = () => {
             </Card>
           </div>
 
-          {/* Gráfico */}
           <Card className='mt-6'>
             <CardHeader>
               <CardTitle>Resumo Visual</CardTitle>
             </CardHeader>
             <CardContent>
-              <ChartContainer
-                className='h-[300px] w-full'
-                config={
-                  {
-                    type: 'bar',
-                    data: {
-                      labels: chartData.map((c) => c.name),
-                      datasets: [
-                        {
-                          label: 'Total',
-                          data: chartData.map((c) => c.value),
-                          backgroundColor: chartData.map((c) => c.color),
-                        },
-                      ],
-                    },
-                    options: {
-                      responsive: true,
-                      plugins: {
-                        legend: { display: false },
-                      },
-                    },
-                  } as any
-                }
-              >
-                <div />
+              <ChartContainer className='h-[300px] w-full' config={chartConfig}>
+                <ResponsiveContainer width='100%' height={300}>
+                  <ComposedChart data={chartData} margin={{ top: 10, right: 40, left: 10, bottom: 0 }}>
+                    <XAxis dataKey='name' />
+                    <YAxis yAxisId='left' allowDecimals={false} />
+                    <YAxis yAxisId='right' orientation='right' tickFormatter={(v) => formatCurrency(Number(v))} />
+                    <Tooltip
+                      formatter={(value, name) => {
+                        if (name === 'Receita') return [formatCurrency(Number(value)), name];
+                        if (name === 'ReceitaPorPedido') return [formatCurrency(Number(value)), 'Receita / Pedido'];
+                        return [value, name];
+                      }}
+                    />
+                    <Legend />
+                    <Bar yAxisId='left' dataKey='Pedidos' barSize={18} fill={chartConfig.orders.color} />
+                    <Bar yAxisId='left' dataKey='Produtos' barSize={18} fill={chartConfig.products.color} />
+                    <Line
+                      yAxisId='right'
+                      type='monotone'
+                      dataKey='Receita'
+                      stroke={chartConfig.revenue.color}
+                      strokeWidth={2}
+                      dot={{ r: 4 }}
+                    />
+                  </ComposedChart>
+                </ResponsiveContainer>
               </ChartContainer>
             </CardContent>
           </Card>

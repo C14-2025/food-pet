@@ -1,3 +1,4 @@
+import 'dotenv';
 import { PrismaClient, consumptionMethod } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 

@@ -3,7 +3,7 @@ import AnalysisPageClient from '@/features/analysis/components/AnalysisPageClien
 
 export default function Page() {
   return (
-    <AuthenticatedResource>
+    <AuthenticatedResource allowedRoles={['ADMIN']}>
       <AnalysisPageClient />
     </AuthenticatedResource>
   );
