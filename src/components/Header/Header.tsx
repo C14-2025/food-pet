@@ -22,7 +22,7 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
     <header className='border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50'>
       <div className='container mx-auto px-4 py-3 flex justify-between items-center'>
         <div className='flex items-center gap-2'>
-          <h1 className='text-2xl font-bold'>Sua Aplicação</h1>
+          <h1 className='text-2xl font-bold'>FoodPet</h1>
           {/* @ts-ignore */}
           {session?.user?.role && (
             //@ts-ignore
