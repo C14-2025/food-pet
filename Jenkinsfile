@@ -49,6 +49,24 @@ pipeline {
             }
         }
 
+        stage('Cypress E2E Tests') {
+            steps {
+                dir("${WORKSPACE}") {
+                    echo 'Installing dependencies for Cypress...'
+                    sh 'npm ci'
+
+                    echo 'Running Cypress tests...'
+                    sh 'npm run test:e2e'
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'cypress/videos/**, cypress/screenshots/**',
+                                    allowEmptyArchive: true
+                }
+            }
+        }
+
         stage('SonarQube Analysis and Quality Gate') {
             steps {
                 dir("${WORKSPACE}") {
