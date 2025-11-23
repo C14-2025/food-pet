@@ -3,7 +3,9 @@ FROM jenkins/jenkins:lts
 USER root
 
 RUN apt-get update && \
-    apt-get install -y wget curl && \
+    apt-get install -y wget curl xvfb \
+    libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 \
+    libxss1 libasound2 libxtst6 libx11-xcb1 && \
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs && \
     apt-get clean && \

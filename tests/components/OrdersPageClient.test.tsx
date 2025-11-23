@@ -13,6 +13,20 @@ jest.mock('@/components/ui/alert', () => ({
   AlertDescription: (props: React.ComponentProps<'div'>) => <div {...props} />,
 }));
 
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+    replace: jest.fn(),
+    prefetch: jest.fn(),
+  }),
+}));
+
+// 1) Mocks rápidos de libs “chatas” (sem mexer no config)
+jest.mock('lucide-react', () => ({ RefreshCcw: () => null }));
+jest.mock('@/components/ui/button', () => ({
+  Button: (props: React.ComponentProps<'button'>) => React.createElement('button', props, props.children),
+}));
+
 // Mock the form to expose onCreated
 jest.mock('@/features/orders/components/CreateOrderForm', () => ({
   CreateOrderForm: ({ onCreated }: { onCreated: () => void }) => (

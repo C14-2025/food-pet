@@ -2,9 +2,9 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile.app
+      dockerfile: ./docker/Dockerfile.app
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       - AUTH_TRUST_HOST=true
       - NODE_ENV=production
@@ -19,11 +19,11 @@ services:
   jenkins:
     build:
       context: .
-      dockerfile: Dockerfile.jenkins
+      dockerfile: ./docker/Dockerfile.jenkins
     user: root
     ports:
-      - '8080:8080'
-      - '50000:50000'
+      - "8080:8080"
+      - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
       - ./jenkins-casc.yaml:/var/jenkins_home/casc.yaml:ro
@@ -32,6 +32,7 @@ services:
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc.yaml
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
     restart: unless-stopped
     depends_on:
       - sonarqube
@@ -40,7 +41,7 @@ services:
     image: sonarqube:latest
     container_name: sonarqube
     ports:
-      - '9000:9000'
+      - "9000:9000"
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
     volumes:
@@ -57,20 +58,20 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: mydb
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   setup:
     build:
       context: .
-      dockerfile: Dockerfile.setup
+      dockerfile: ./docker/Dockerfile.setup
     depends_on:
       - jenkins
       - sonarqube
     volumes:
       - setup_done:/setup_done
-    restart: 'no'
+    restart: "no"
 
 volumes:
   jenkins_home:

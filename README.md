@@ -1,41 +1,53 @@
-### Prerequisites
+# Food Pet — Development Setup
 
-- [Node.js](https://nodejs.org/) (v18+ recommended)
-- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
-- [npm](https://www.npmjs.com/)
+## 🛠️ Prerequisites
 
-### Setup
+- **Node.js** v18+
+- **npm**
+- **Docker** & **Docker Compose**
 
-1. **Install dependencies**
+---
 
-   ```bash
-   npm install
-   ```
+## 🚀 Setup
 
-2. **Configure environment variables**
-   - Copy `.env.example` to `.env` and adjust as needed.
+### 1. Install dependencies
 
-3. **Start the database with Docker**
+```bash
+npm install
+```
 
-   ```bash
-   docker-compose up -d
-   ```
+### 2. Configure environment variables
 
-4. **Generate Prisma client**
+- Copy `.env.example` → `.env`
+- Update values as needed
 
-   ```bash
-   npx prisma generate
-   ```
+### 3. Build and start services (Docker)
 
-5. **Run database migrations**
+```bash
+docker-compose build --no-cache
+docker-compose up -d
+```
 
-   ```bash
-   npx prisma migrate dev --name init
-   ```
+### 4. Generate Prisma client
 
-6. **Start the development server**
+```bash
+npm run db:generate
+```
 
-   ```bash
-   npm run dev
-   ```
-   
+### 5. Run database migrations
+
+```bash
+npm run db:migrate
+```
+
+### 6. Initialize database for development
+
+```bash
+npm run db:mount
+```
+
+### 7. Start development server
+
+```bash
+npm run dev
+```
