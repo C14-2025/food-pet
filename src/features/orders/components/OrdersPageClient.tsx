@@ -1,16 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RefreshCcw } from 'lucide-react';
 import { OrdersTable } from './OrdersTable';
-import { CreateOrderForm } from './CreateOrderForm';
 import type { Order } from '@/features/orders/types';
+import { CreateOrderForm } from './CreateOrderForm';
 import { listOrders, getErrorMessage } from '@/lib/api/orders';
 
 export function OrdersPageClient() {
+  const [showSuccess, setShowSuccess] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,8 +32,10 @@ export function OrdersPageClient() {
   };
 
   useEffect(() => {
-    void refresh();
-  }, []);
+    if (!showSuccess) return;
+    const timer = setTimeout(() => setShowSuccess(false), 5000);
+    return () => clearTimeout(timer);
+  }, [showSuccess]);
 
   return (
     <div className='mx-auto max-w-6xl space-y-6 p-6'>
@@ -41,10 +45,18 @@ export function OrdersPageClient() {
 
       <CreateOrderForm
         onCreated={async () => {
+          setShowSuccess(true);
           await refresh();
           router.push('/payment');
         }}
       />
+
+      {showSuccess && (
+        <Alert className='bg-emerald-50 text-emerald-900'>
+          <AlertTitle>Compra concluida</AlertTitle>
+          <AlertDescription>Seu pedido foi registrado com sucesso.</AlertDescription>
+        </Alert>
+      )}
 
       <Card>
         <CardHeader className='flex flex-row items-center justify-between'>

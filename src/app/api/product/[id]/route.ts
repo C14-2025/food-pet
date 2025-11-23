@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { checkAuth } from '@/lib/auth/endpoints.auth.helper';
 
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
-  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
+  const authCheck = await checkAuth(['ADMIN']);
   if (!authCheck.authorized) {
     return authCheck.response;
   }
@@ -35,6 +35,11 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
 }
 
 export async function DELETE(_request: Request, context: { params: Promise<{ id: string }> }) {
+  const authCheck = await checkAuth(['ADMIN']);
+  if (!authCheck.authorized) {
+    return authCheck.response;
+  }
+
   const { id } = await context.params;
 
   if (Number.isNaN(Number(id))) {

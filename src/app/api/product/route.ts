@@ -4,7 +4,7 @@ import { parse } from 'csv-parse/sync';
 import { checkAuth } from '@/lib/auth/endpoints.auth.helper';
 
 export async function POST(req: NextRequest) {
-  const authCheck = await checkAuth(['ADMIN', 'CLIENT']);
+  const authCheck = await checkAuth(['ADMIN']);
   if (!authCheck.authorized) {
     return authCheck.response;
   }

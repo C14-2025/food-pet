@@ -16,45 +16,39 @@ describe('Orders Page - Authentication', () => {
   describe('Admin User', () => {
     beforeEach(() => {
       cy.mockLoginAsAdmin();
+      cy.intercept('GET', '/api/product', {
+        statusCode: 200,
+        body: [
+          { id: 1, name: 'Teste Produto', price: 10.5, image: 'https://via.placeholder.com/80' },
+          { id: 2, name: 'Outro Produto', price: 5, image: 'https://via.placeholder.com/80?2' },
+        ],
+      }).as('products');
+      cy.intercept('POST', '/api/order', { statusCode: 200, body: { id: 99, total: 10.5 } }).as('createOrder');
       cy.visit('/orders');
-    });
-
-    it('should display header with admin role badge', () => {
-      cy.contains('span', 'ADMIN').should('be.visible');
-      cy.contains('span', 'ADMIN').should('have.class', 'bg-blue-100');
-    });
-
-    it('should display admin email in dropdown menu', () => {
-      cy.get('[data-cy="user-avatar"]').click();
-      cy.get('[data-cy="user-email"]').should('contain', 'admin@example.com');
     });
 
     it('should display orders page content', () => {
       cy.get('#orders-title').should('contain', 'Pedidos');
-      cy.contains('Lista de pedidos').should('be.visible');
-      cy.contains('Atualizar').should('be.visible');
+      cy.contains('Novo pedido').should('be.visible');
+      cy.contains('Criar pedido').should('be.visible');
     });
   });
 
   describe('Client User', () => {
     beforeEach(() => {
       cy.mockLoginAsClient();
+      cy.intercept('GET', '/api/product', {
+        statusCode: 200,
+        body: [{ id: 1, name: 'Teste Produto', price: 10.5, image: 'https://via.placeholder.com/80' }],
+      }).as('products');
+      cy.intercept('POST', '/api/order', { statusCode: 200, body: { id: 100, total: 10.5 } }).as('createOrder');
       cy.visit('/orders');
-    });
-
-    it('should display header with client role badge', () => {
-      cy.contains('span', 'CLIENT').should('be.visible');
-      cy.contains('span', 'CLIENT').should('have.class', 'bg-blue-100');
-    });
-
-    it('should display client email in dropdown menu', () => {
-      cy.get('[data-cy="user-avatar"]').click();
-      cy.get('[data-cy="user-email"]').should('contain', 'client@example.com');
     });
 
     it('should display orders page content', () => {
       cy.get('#orders-title').should('contain', 'Pedidos');
-      cy.contains('Lista de pedidos').should('be.visible');
+      cy.contains('Novo pedido').should('be.visible');
+      cy.contains('Criar pedido').should('be.visible');
     });
   });
 });

@@ -8,8 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { ConsumptionMethod, Product } from '@/features/orders/types';
-import { createOrder, listProducts, getErrorMessage, currency } from '@/lib/api/orders';
+import { createOrder, getErrorMessage, currency } from '@/lib/api/orders';
+import { listProducts } from '@/lib/api/product';
 import { Plus } from 'lucide-react';
+import Image from 'next/image';
 
 export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -74,7 +76,7 @@ export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
   };
 
   return (
-    <Card>
+    <Card className='mx-auto max-w-5xl'>
       <CardHeader>
         <CardTitle>Novo pedido</CardTitle>
       </CardHeader>
@@ -125,6 +127,7 @@ export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Produto</TableHead>
+                    <TableHead className='w-[110px] text-center'>Imagem</TableHead>
                     <TableHead>Preço</TableHead>
                     <TableHead>Quantidade</TableHead>
                     <TableHead>Subtotal</TableHead>
@@ -140,7 +143,7 @@ export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
                       <TableRow key={idx}>
                         <TableCell className='min-w-[220px]'>
                           <Select
-                            value={typeof row.productId === 'number' ? String(row.productId) : undefined}
+                            value={row.productId === '' ? '' : String(row.productId)}
                             onValueChange={(v) => updateItem(idx, { productId: Number(v) })}
                           >
                             <SelectTrigger>
@@ -154,6 +157,26 @@ export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
                               ))}
                             </SelectContent>
                           </Select>
+                        </TableCell>
+                        <TableCell className='w-[110px]'>
+                          <div className='flex min-h-14 items-center justify-center'>
+                            {prod?.image ? (
+                              <Image
+                                key={prod.id}
+                                src={prod.image}
+                                alt={prod.name}
+                                width={48}
+                                height={48}
+                                className='h-12 w-12 rounded object-cover border'
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjRUVFRUVFIi8+CjxwYXRoIGQ9Ik0xNSA0MkwzNSA4IiBzdHJva2U9IiNBN0E3QTciIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxwYXRoIGQ9Ik0xOCAyMEgyMiIgc3Ryb2tlPSIjOTk5OTk5IiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8cGF0aCBkPSJNMjggMjBIMzIiIHN0cm9rZT0iIzk5OTk5OSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPHBhdGggZD0iTTI1IDI4QzI3Ljc2MTQgMjggMzAgMjUuNzYxNCAzMCAyMUMzMCAxNi4yMzg2IDI3Ljc2MTQgMTQgMjUgMTRDMjIuMjM4NiAxNCAyMCAxNi4yMzg2IDIwIDIxQzIwIDI1Ljc2MTQgMjIuMjM4NiAyOCAyNSAyOFoiIGZpbGw9IiNCQkJEQkQiLz4KPC9zdmc+';
+                                }}
+                              />
+                            ) : (
+                              <span className='text-xs text-muted-foreground'>—</span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>{prod ? currency(prod.price) : '—'}</TableCell>
                         <TableCell className='w-[120px]'>

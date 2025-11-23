@@ -203,7 +203,7 @@ describe('DELETE /api/products/[id]', () => {
     const res = await DELETE(req, { params: Promise.resolve({ id: '1' }) });
 
     expect(res?.status).toBe(204);
-    expect(res.body).toBe(null);
+    expect(res?.body).toBe(null);
   });
 
   it('should return 404 if product is not found', async () => {
