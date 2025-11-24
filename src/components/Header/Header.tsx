@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { LogOut, User } from 'lucide-react';
 import { Session } from 'next-auth';
 import { FC } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export type HeaderProps = {
   session: Session | null;
@@ -18,6 +20,15 @@ export type HeaderProps = {
 };
 
 export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => {
+  const pathname = usePathname();
+
+  const linkClass = (href: string) =>
+    `text-sm font-medium ${
+      pathname === href
+        ? 'text-blue-600 font-semibold underline underline-offset-4'
+        : 'text-gray-700 hover:text-blue-600 hover:underline'
+    }`;
+
   return (
     <header className='border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50'>
       <div className='container mx-auto px-4 py-3 flex justify-between items-center'>
@@ -28,8 +39,23 @@ export const Header: FC<HeaderProps> = ({ session, handleLogout, initials }) => 
             //@ts-ignore
             <span className='text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full'>{session.user.role}</span>
           )}
-        </div>
+          {/* @ts-ignore */}
+          {!!session?.user?.role && session.user.role == 'ADMIN' && (
+            <>
+              <Link href='/orders' className={linkClass('/orders')}>
+                Orders
+              </Link>
 
+              <Link href='/analysis' className={linkClass('/analysis')}>
+                Analysis
+              </Link>
+
+              <Link href='/products' className={linkClass('/products')}>
+                Products
+              </Link>
+            </>
+          )}
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className='focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full' data-cy='user-avatar'>
