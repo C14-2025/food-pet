@@ -28,6 +28,7 @@ RUN jenkins-plugin-cli --plugins \
     htmlpublisher:latest \
     job-dsl:latest \
     git-client:latest \
-    sonar:latest
+    sonar:latest \
+    mailer:latest
 
 ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"

@@ -47,7 +47,42 @@ jobs:
         }
       }
 
+  - script: >
+      pipelineJob('email-test') {
+        definition {
+          cps {
+            script("""
+              pipeline {
+                agent any
+                stages {
+                  stage('Send Email') {
+                    steps {
+                      echo "Sending test mail..."
+                      echo "${EMAIL_LIST}"
+                      mail to: "${EMAIL_LIST}",
+                           subject: "Teste de Email - Jenkins",
+                           body: "Este é um e-mail de teste enviado pelo Jenkins via JCasC."
+                    }
+                  }
+                }
+              }
+            """)
+            sandbox()
+          }
+        }
+      }
+
 unclassified:
+  mailer:
+    smtpHost: 'smtp.gmail.com'
+    smtpPort: '587'
+    useSsl: false
+    useTls: true
+    replyToAddress: '${EMAIL_SENDER}'
+    authentication:
+      username: '${EMAIL_SENDER}'
+      password: '${EMAIL_PASS}'
+
   globalLibraries:
     libraries: []
 

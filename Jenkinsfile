@@ -93,6 +93,9 @@ pipeline {
         }
         failure {
             echo 'Tests failed. Please check the test reports.'
+            mail to: "${EMAIL_LIST}",
+             subject: "Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: "The build has failed. Check logs."
         }
     }
 }
