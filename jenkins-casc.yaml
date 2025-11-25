@@ -47,31 +47,6 @@ jobs:
         }
       }
 
-  - script: >
-      pipelineJob('email-test') {
-        definition {
-          cps {
-            script("""
-              pipeline {
-                agent any
-                stages {
-                  stage('Send Email') {
-                    steps {
-                      echo "Sending test mail..."
-                      echo "${EMAIL_LIST}"
-                      mail to: "${EMAIL_LIST}",
-                           subject: "Teste de Email - Jenkins",
-                           body: "Este é um e-mail de teste enviado pelo Jenkins via JCasC."
-                    }
-                  }
-                }
-              }
-            """)
-            sandbox()
-          }
-        }
-      }
-
 unclassified:
   mailer:
     smtpHost: 'smtp.gmail.com'
