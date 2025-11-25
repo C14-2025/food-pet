@@ -1,3 +1,5 @@
+def failedStage = ""
+
 pipeline {
     agent any
 
@@ -12,6 +14,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                script { failedStage = 'Run Tests' }
+
                 checkout scm
                 echo 'Current working directory:'
                 sh 'pwd'
@@ -22,6 +26,8 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
+                script { failedStage = 'Run Tests' }
+
                 dir("${WORKSPACE}") {
                     echo 'Installing dependencies...'
                     sh 'pwd'
@@ -32,6 +38,8 @@ pipeline {
 
         stage('Run Tests') {
             steps {
+                script { failedStage = 'Run Tests' }
+
                 dir("${WORKSPACE}") {
                     echo 'Running tests with coverage...'
                     sh 'npx jest --coverage --json --outputFile=test-results.json'
@@ -41,6 +49,8 @@ pipeline {
 
         stage('Archive Test Results') {
             steps {
+                script { failedStage = 'Run Tests' }
+
                 dir("${WORKSPACE}") {
                     echo 'Archiving test results...'
                     archiveArtifacts artifacts: 'test-report.html,coverage/**,test-results.json',
@@ -51,6 +61,8 @@ pipeline {
 
         stage('Cypress E2E Tests') {
             steps {
+                script { failedStage = 'Run Tests' }
+
                 dir("${WORKSPACE}") {
                     echo 'Running Cypress tests...'
                     sh 'npm run test:e2e'
@@ -66,6 +78,8 @@ pipeline {
 
         stage('SonarQube Analysis and Quality Gate') {
             steps {
+                script { failedStage = 'Run Tests' }
+
                 dir("${WORKSPACE}") {
                     withSonarQubeEnv('SonarQubeServer') {
                         echo 'Running SonarQube analysis...'
@@ -91,8 +105,8 @@ pipeline {
         failure {
             echo 'Tests failed. Please check the test reports.'
             mail to: "${EMAIL_LIST}",
-             subject: "Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-             body: "The build has failed. Check logs."
+             subject: "Build Failed in stage: ${failedStage} - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+             body: "Pipeline failed in stage: ${failedStage}\nCheck logs for more details."
         }
     }
 }
