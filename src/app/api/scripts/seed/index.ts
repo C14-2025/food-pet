@@ -7,8 +7,10 @@ const prisma = new PrismaClient();
 const createUsers = async () => {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
-  const admin = await prisma.user.create({
-    data: {
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
+    update: {},
+    create: {
       name: 'Admin User',
       email: 'admin@example.com',
       password: hashedPassword,
@@ -16,8 +18,10 @@ const createUsers = async () => {
     },
   });
 
-  const client = await prisma.user.create({
-    data: {
+  const client = await prisma.user.upsert({
+    where: { email: 'client@example.com' },
+    update: {},
+    create: {
       name: 'Client User',
       email: 'client@example.com',
       password: hashedPassword,
@@ -29,7 +33,6 @@ const createUsers = async () => {
 };
 
 const createProducts = async () => {
-  // No default products to keep the catalog clean after seeding
   return prisma.product.createMany({ data: [] });
 };
 
@@ -37,7 +40,7 @@ async function main() {
   console.log('Seeding database...');
 
   const { admin, client } = await createUsers();
-  console.log(`Created users: admin (${admin.email}) and client (${client.email})`);
+  console.log(`Created or found users: admin (${admin.email}) and client (${client.email})`);
 
   const products = await createProducts();
   console.log(`Created ${products.count} products`);

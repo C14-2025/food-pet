@@ -103,7 +103,7 @@ export function CreateOrderForm({ onCreated }: { onCreated: () => void }) {
                     size='sm'
                     onClick={() => setMethod('DINE_IN')}
                   >
-                    Salão
+                    Comer aqui
                   </Button>
                   <Button
                     type='button'
