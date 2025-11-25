@@ -52,9 +52,6 @@ pipeline {
         stage('Cypress E2E Tests') {
             steps {
                 dir("${WORKSPACE}") {
-                    echo 'Installing dependencies for Cypress...'
-                    sh 'npm ci'
-
                     echo 'Running Cypress tests...'
                     sh 'npm run test:e2e'
                 }
